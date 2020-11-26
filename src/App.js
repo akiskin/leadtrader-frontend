@@ -3,6 +3,8 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 
 import Links, { ForgotPasswordLink } from "./sidebar/Links";
 
+import Login from "./pages/Login";
+
 const routes = [
   {
     path: "/",
@@ -16,7 +18,7 @@ const routes = [
   },
   {
     path: "/login",
-    main: () => <h2>Login</h2>,
+    main: Login,
     sidebar: ForgotPasswordLink,
   },
   {

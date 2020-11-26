@@ -1,12 +1,24 @@
+import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 
-const SidebarLinks = () => (
-  <div className="pl-4 pr-4">
-    <SingleLink to="/" text="Home" />
-    <SingleLink to="/login" text="Login" />
-    <SingleLink to="/dashboard" text="Dashboard" />
-  </div>
-);
+const SidebarLinks = () => {
+  const loggedIn = useSelector((state) => state.auth.loggedIn);
+
+  if (loggedIn) {
+    return (
+      <div className="pl-4 pr-4">
+        <SingleLink to="/" text="Home" />
+        <SingleLink to="/dashboard" text="Dashboard" />
+      </div>
+    );
+  } else {
+    return (
+      <div className="pl-4 pr-4">
+        <SingleLink to="/login" text="Login" />
+      </div>
+    );
+  }
+};
 
 const SingleLink = (props) => (
   <div className="h-12 w-full pt-1 pb-1">
