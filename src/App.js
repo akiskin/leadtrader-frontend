@@ -1,33 +1,35 @@
 import { lazy, Suspense } from "react";
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+
+import Links, { ForgotPasswordLink } from "./sidebar/Links";
 
 const routes = [
   {
     path: "/",
     exact: true,
-    sidebar: () => <div>Additional links and info</div>,
     main: () => <h2>Home</h2>,
+    sidebar: () => (
+      <div className="bg-gradient-to-r from-purple-400 via-pink-500 to-red-500">
+        Additional links and info
+      </div>
+    ),
+  },
+  {
+    path: "/login",
+    main: () => <h2>Login</h2>,
+    sidebar: ForgotPasswordLink,
   },
   {
     path: "/dashboard",
-    //sidebar: () => <div>dashboard!</div>,
     main: lazy(() => import("./pages/Dashboard")),
   },
 ];
 
 const App = () => (
   <Router>
-    <div>
-      <div>
-        <ul>
-          <li>
-            <Link to="/">Home</Link>
-          </li>
-          <li>
-            <Link to="/dashboard">Dashboard</Link>
-          </li>
-        </ul>
-
+    <div className="flex flex-row w-full">
+      <div className="flex flex-col w-64 flex-shrink-0 bg-purple-500 h-screen justify-between">
+        <Links />
         <Switch>
           {routes.map((route, index) =>
             "sidebar" in route ? (
@@ -42,7 +44,7 @@ const App = () => (
         </Switch>
       </div>
 
-      <div>
+      <div className="flex-1 bg-gray-500">
         <Suspense fallback={<div>Loading...</div>}>
           <Switch>
             {routes.map((route, index) => (
