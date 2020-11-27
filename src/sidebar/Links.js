@@ -6,22 +6,24 @@ const SidebarLinks = () => {
 
   if (loggedIn) {
     return (
-      <div className="pl-4 pr-4">
+      <div className="pl-4 pr-4 space-y-2">
         <SingleLink to="/" text="Home" />
         <SingleLink to="/dashboard" text="Dashboard" />
+        <SingleLink to="/logout" text="Logout" />
       </div>
     );
   } else {
     return (
-      <div className="pl-4 pr-4">
+      <div className="pl-4 pr-4 space-y-2">
         <SingleLink to="/login" text="Login" />
+        <SingleLink to="/register" text="Register" />
       </div>
     );
   }
 };
 
 const SingleLink = (props) => (
-  <div className="h-12 w-full pt-1 pb-1">
+  <div className="h-12 w-full">
     <Link to={props.to}>
       <div className="h-full rounded hover:bg-purple-400 flex items-center">
         <span className="ml-6 text-base uppercase text-gray-300 font-bold tracking-wide">
