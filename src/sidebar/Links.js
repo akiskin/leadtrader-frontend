@@ -7,6 +7,7 @@ const SidebarLinks = () => {
   if (loggedIn) {
     return (
       <div className="pl-4 pr-4 space-y-2">
+        <div>Welcome</div>
         <SingleLink to="/" text="Home" />
         <SingleLink to="/dashboard" text="Dashboard" />
         <SingleLink to="/logout" text="Logout" />
