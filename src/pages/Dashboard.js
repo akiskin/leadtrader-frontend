@@ -56,7 +56,7 @@ const Dashboard = () => (
       </div>
     </div>
 
-    <div className="flex-1 mt-5 ml-6 mr-3">
+    <div className="flex-1 mt-5 ml-3 mr-6">
       <div className="rounded border border-gray-100 bg-white px-3 py-1">
         <div className="text-lg font-semibold uppercase tracking-wide">
           Buy statistics
