@@ -25,7 +25,7 @@ const Login = () => {
     <div className="grid place-items-center h-screen">
       <div
         className={
-          "flex flex-col border border-gray-100 rounded bg-gray-100 py-5 px-10 space-y-5" +
+          "flex flex-col border border-gray-100 rounded bg-white py-5 px-10 space-y-5" +
           (isLoading ? " animate-pulse  " : " ")
         }
       >

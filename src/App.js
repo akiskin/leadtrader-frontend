@@ -34,7 +34,7 @@ const App = () => (
         </Switch>
       </div>
 
-      <div className="flex-1">
+      <div className="flex-1 bg-gray-100">
         <Suspense fallback={<div>Loading...</div>}>
           <Switch>
             {routes.map((route, index) =>
