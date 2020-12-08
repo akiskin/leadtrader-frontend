@@ -8,7 +8,7 @@ const routes = [
   {
     path: "/",
     exact: true,
-    main: () => <h2>Home</h2>,
+    main: lazy(() => import("./pages/Dashboard")),
     sidebar: () => (
       <div className="bg-gradient-to-r from-purple-400 via-pink-500 to-red-500">
         Additional links and info
@@ -16,14 +16,15 @@ const routes = [
     ),
   },
   {
+    path: "/sell",
+    exact: true,
+    main: lazy(() => import("./pages/SellCampaigns"))
+  },
+  {
     path: "/login",
     main: Login,
     sidebar: ForgotPasswordLink,
     public: true,
-  },
-  {
-    path: "/dashboard",
-    main: lazy(() => import("./pages/Dashboard")),
   },
 ];
 

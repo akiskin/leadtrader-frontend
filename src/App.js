@@ -15,7 +15,7 @@ import { useSelector } from "react-redux";
 const App = () => (
   <Router>
     <div className="flex flex-row w-full">
-      <div className="flex flex-col w-64 flex-shrink-0 bg-purple-500 h-screen justify-between">
+      <div className="flex flex-col w-64 flex-shrink-0 h-screen justify-between bg-gradient-to-b from-purple-500 to-purple-400">
         <div className="pt-4">
           <Links />
         </div>

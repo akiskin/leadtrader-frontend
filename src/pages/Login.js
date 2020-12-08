@@ -2,6 +2,10 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useHistory, useLocation } from "react-router-dom";
 
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSpinner } from "@fortawesome/free-solid-svg-icons"
+
+
 const Login = () => {
   let history = useHistory();
   let location = useLocation();
@@ -43,17 +47,14 @@ const Login = () => {
           ></input>
         </div>
 
-        <div className="flex justify-center">
+        <div className="flex justify-center h-10 items-center">
+          { isLoading ? <FontAwesomeIcon icon={faSpinner} spin /> :
           <button
             onClick={login}
-            className={
-              "w-20 border rounded border-purple-500 px-2 py-1 ring-2" +
-              (isLoading ? " cursor-not-allowed" : "")
-            }
-            disabled={isLoading}
+            className="w-20 border rounded border-purple-500 px-2 py-1 ring-2"
           >
             Login
-          </button>
+          </button>}
         </div>
       </div>
     </div>
