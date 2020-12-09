@@ -1,8 +1,10 @@
-import { useState } from "react";
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSpinner } from "@fortawesome/free-solid-svg-icons";
+import { useDispatch, useSelector } from "react-redux";
+import { getSellCampaigns } from "../store/sellcampaigns/actions";
 
 const SellCampaigns = () => (
   <>
@@ -50,14 +52,25 @@ const SellCampaigns = () => (
 );
 
 const SellCampaignList = (props) => {
-  const [isLoading, setLoading] = useState(true);
+
+  const dispatch = useDispatch()
+
+  const { isLoading, list } = useSelector(store => store.sellcampaigns)
+  //const a = useSelector(store => store.sellcampaigns)
+
+  //console.log(a)
+
+  //const isLoading = true
+  useEffect(() => { 
+    dispatch(getSellCampaigns())
+  }, [dispatch])
 
   return isLoading ? (
     <div className="text-center">
       <FontAwesomeIcon icon={faSpinner} spin size="2x" />
     </div>
   ) : (
-    <table>dff</table>
+  <table>{ JSON.stringify(list) }</table>
   );
 };
 

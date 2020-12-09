@@ -1,5 +1,7 @@
 import { combineReducers } from "redux";
 
+import sellcampaigns from './sellcampaigns/reducer'
+
 const initialState = {
   loggedIn: false,
   user: undefined,
@@ -17,6 +19,7 @@ const auth = (state = initialState, action) => {
 
 const rootReducer = combineReducers({
   auth,
+  sellcampaigns,
 });
 
 export default rootReducer;
