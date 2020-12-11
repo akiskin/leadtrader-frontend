@@ -1,10 +1,10 @@
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
+import { format } from "date-fns";
 
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSpinner } from "@fortawesome/free-solid-svg-icons";
 import { useDispatch, useSelector } from "react-redux";
-import { getSellCampaigns } from "../store/sellcampaigns/actions";
+import { getSellCampaigns } from "store/sellcampaigns/actions";
+import LoadingSpinner from "common/components/LoadingSpinner";
 
 const SellCampaigns = () => (
   <>
@@ -51,26 +51,47 @@ const SellCampaigns = () => (
   </>
 );
 
-const SellCampaignList = (props) => {
+const SellCampaignList = () => {
+  const dispatch = useDispatch();
 
-  const dispatch = useDispatch()
+  const { isLoading, list } = useSelector((store) => store.sellcampaigns);
 
-  const { isLoading, list } = useSelector(store => store.sellcampaigns)
-  //const a = useSelector(store => store.sellcampaigns)
-
-  //console.log(a)
-
-  //const isLoading = true
-  useEffect(() => { 
-    dispatch(getSellCampaigns())
-  }, [dispatch])
+  useEffect(() => {
+    dispatch(getSellCampaigns());
+  }, [dispatch]);
 
   return isLoading ? (
-    <div className="text-center">
-      <FontAwesomeIcon icon={faSpinner} spin size="2x" />
-    </div>
+    <LoadingSpinner />
   ) : (
-  <table>{ JSON.stringify(list) }</table>
+    <table className="w-full border-collapse">
+      <thead>
+        <tr className="uppercase border-b-2 border-gray-100 text-gray-400">
+          <th className="pl-6 font-normal text-left">Date</th>
+          <th className="font-normal text-left">Status</th>
+          <th className="font-normal text-left">Product</th>
+          <th className="font-normal text-left">Total Leads</th>
+          <th className="font-normal text-left"># Sold</th>
+          <th className="font-normal text-left"># Rejected</th>
+          <th className="font-normal text-left">$ Earned</th>
+        </tr>
+      </thead>
+      <tbody>
+        {list.map((campaign) => (
+          <tr
+            className="border-t border-gray-100 cursor-pointer hover:bg-gray-100"
+            key={campaign.id}
+          >
+            <td className="pl-6 py-3">{format(campaign.date, "d MMM yy")}</td>
+            <td className="">{campaign.status}</td>
+            <td>{campaign.product.name}</td>
+            <td>{campaign.leads}</td>
+            <td>{campaign.leads_sold}</td>
+            <td>{campaign.leads_rejected}</td>
+            <td>{campaign.earned}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
   );
 };
 
