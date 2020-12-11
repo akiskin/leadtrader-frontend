@@ -1,10 +1,10 @@
 import { lazy } from "react";
 
-import { ForgotPasswordLink } from "./sidebar/Links";
-
-import Login from "./pages/Login";
+import publicRoutes from "./public";
 
 const routes = [
+  ...publicRoutes,
+
   {
     path: "/",
     exact: true,
@@ -21,10 +21,9 @@ const routes = [
     main: lazy(() => import("pages/SellCampaigns")),
   },
   {
-    path: "/login",
-    main: Login,
-    sidebar: ForgotPasswordLink,
-    public: true,
+    path: "/catalogs/products",
+    exact: true,
+    main: lazy(() => import("pages/Products")),
   },
 ];
 

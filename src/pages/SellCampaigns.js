@@ -82,7 +82,7 @@ const SellCampaignList = () => {
             key={campaign.id}
           >
             <td className="pl-6 py-3">{format(campaign.date, "d MMM yy")}</td>
-            <td className="">{campaign.status}</td>
+            <td>{campaign.status}</td>
             <td>{campaign.product.name}</td>
             <td>{campaign.leads}</td>
             <td>{campaign.leads_sold}</td>

@@ -7,7 +7,7 @@ import {
 } from "react-router-dom";
 
 import Links from "./sidebar/Links";
-import routes from "./routes";
+import routes from "./routes/index";
 import { useSelector } from "react-redux";
 
 //TODO implement storage of auth data - see https://github.com/upstatement/react-router-guards

@@ -12,7 +12,7 @@ export const getSellCampaigns = () => async (dispatch) => {
         type: ACTIONS.SELLCAMPAIGNS_LOADING_SUCCESS,
         data: MOCK_DATA.campaigns,
       }),
-    0
+    1500
   );
 };
 

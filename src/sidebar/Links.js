@@ -13,7 +13,7 @@ const SidebarLinks = () => {
       <div className="pl-4 pr-4 space-y-2">
         <SingleLink to="/" text="Dashboard" icon={faChartBar} />
         <SingleLink to="/sell" text="Sell Campaigns" icon={faCloudUploadAlt} />
-        <SingleLink to="/" text="Buy Camapigns" icon={faCloudDownloadAlt} />
+        <SingleLink to="/" text="Buy Campaigns" icon={faCloudDownloadAlt} />
         <SingleLink to="/" text="Finances" icon={faMoneyBillAlt} />
         <SingleLink to="/" text="My Account" icon={faIdCard} />
         <SingleLink to="/logout" text="Logout" icon={faPowerOff} />

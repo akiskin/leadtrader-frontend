@@ -1,4 +1,5 @@
 import { parse } from "date-fns";
+import { ACTIONS } from "./actions";
 
 const initialState = {
   isLoading: false,
@@ -7,9 +8,9 @@ const initialState = {
 
 const sellcampaigns = (state = initialState, action) => {
   switch (action.type) {
-    case "SELLCAMPAIGNS_LOADING_START":
+    case ACTIONS.SELLCAMPAIGNS_LOADING_START:
       return { isLoading: true, list: [] };
-    case "SELLCAMPAIGNS_LOADING_SUCCESS":
+    case ACTIONS.SELLCAMPAIGNS_LOADING_SUCCESS:
       return {
         isLoading: false,
         list: action.data.map((item) => ({
