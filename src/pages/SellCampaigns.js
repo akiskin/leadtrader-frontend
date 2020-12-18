@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import { format } from "date-fns";
 
 import { useDispatch, useSelector } from "react-redux";
@@ -53,6 +53,7 @@ const SellCampaigns = () => (
 
 const SellCampaignList = () => {
   const dispatch = useDispatch();
+  const history = useHistory();
 
   const { isLoading, list } = useSelector((store) => store.sellcampaigns);
 
@@ -80,6 +81,7 @@ const SellCampaignList = () => {
           <tr
             className="border-t border-gray-100 cursor-pointer hover:bg-gray-100"
             key={campaign.id}
+            onClick={() => history.push(`/sell/${campaign.id}`)}
           >
             <td className="pl-6 py-3">{format(campaign.date, "d MMM yy")}</td>
             <td>{campaign.status}</td>

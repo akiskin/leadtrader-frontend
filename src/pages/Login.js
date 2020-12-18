@@ -3,8 +3,7 @@ import { useDispatch } from "react-redux";
 import { useHistory, useLocation } from "react-router-dom";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSpinner } from "@fortawesome/free-solid-svg-icons"
-
+import { faSpinner } from "@fortawesome/free-solid-svg-icons";
 
 const Login = () => {
   let history = useHistory();
@@ -14,15 +13,16 @@ const Login = () => {
 
   const dispatch = useDispatch();
 
-  let { from } = location.state || { from: { pathname: "/" } };
-  let login = (e) => {
+  const { from } = location.state || { from: { pathname: "/" } };
+
+  const login = (e) => {
     e.preventDefault();
     setLoading(true);
+
     setTimeout(() => {
       dispatch({ type: "LOGIN" });
       history.replace(from);
-      setLoading(false);
-    }, 2000);
+    }, 1500);
   };
 
   return (
@@ -48,13 +48,16 @@ const Login = () => {
         </div>
 
         <div className="flex justify-center h-10 items-center">
-          { isLoading ? <FontAwesomeIcon icon={faSpinner} spin /> :
-          <button
-            onClick={login}
-            className="w-20 border rounded border-purple-500 px-2 py-1 ring-2"
-          >
-            Login
-          </button>}
+          {isLoading ? (
+            <FontAwesomeIcon icon={faSpinner} spin />
+          ) : (
+            <button
+              onClick={login}
+              className="w-20 border rounded border-purple-500 px-2 py-1 ring-2"
+            >
+              Login
+            </button>
+          )}
         </div>
       </div>
     </div>

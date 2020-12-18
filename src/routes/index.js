@@ -16,9 +16,18 @@ const routes = [
     ),
   },
   {
+    path: "/sell/new",
+    exact: true,
+    main: lazy(() => import("pages/NewSellCampaign")),
+  },
+  {
     path: "/sell",
     exact: true,
     main: lazy(() => import("pages/SellCampaigns")),
+  },
+  {
+    path: "/sell/:id",
+    main: lazy(() => import("pages/SellCampaign")),
   },
   {
     path: "/catalogs/products",
