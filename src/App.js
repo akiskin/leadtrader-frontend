@@ -5,12 +5,15 @@ import {
   Route,
   Redirect,
 } from "react-router-dom";
+import Modal from "react-modal";
 
 import Links from "./sidebar/Links";
 import routes from "./routes/index";
 import { useSelector } from "react-redux";
 
 //TODO implement storage of auth data - see https://github.com/upstatement/react-router-guards
+
+Modal.setAppElement("#root");
 
 const App = () => (
   <Router>
