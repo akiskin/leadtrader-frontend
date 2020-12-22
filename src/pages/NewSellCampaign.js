@@ -6,7 +6,7 @@ import { createSellCampaign } from "store/sellcampaigns/actions";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSpinner } from "@fortawesome/free-solid-svg-icons";
-import { useHistory } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 
 const NewSellCampaign = () => {
   const dispatch = useDispatch();
@@ -120,10 +120,13 @@ const NewSellCampaign = () => {
                   : "border-purple-500 ring-purple-200")
               }
             >
-              Create campaign |{"" + selectedProductId}|{"" + stopPrice}|
-              {"" + expiration}
+              Create campaign
             </button>
           )}
+        </div>
+
+        <div className="text-gray-500">
+          <Link to="/sell">← Back</Link>
         </div>
       </div>
     </div>
