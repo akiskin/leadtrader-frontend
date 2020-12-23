@@ -23,11 +23,11 @@ const routes = [
   {
     path: "/sell",
     exact: true,
-    main: lazy(() => import("pages/SellCampaigns")),
+    main: lazy(() => import("pages/sell/SellCampaigns")),
   },
   {
     path: "/sell/:id",
-    main: lazy(() => import("pages/SellCampaign")),
+    main: lazy(() => import("pages/sell/SellCampaign")),
   },
   {
     path: "/catalogs/products",

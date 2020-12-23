@@ -3,8 +3,10 @@ import Modal from "react-modal";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClock } from "@fortawesome/free-regular-svg-icons";
+import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
 import LoadingSpinner from "common/components/LoadingSpinner";
+import UploadWizard from "./components/UploadWizard";
 
 const SellCampaign = (props) => {
   const { id } = useParams();
@@ -88,8 +90,13 @@ const SellCampaign = (props) => {
         className="grid place-items-center h-screen outline-none"
         style={{ overlay: { outline: "none" } }}
       >
-        <div className="h-24 bg-gray-400">
-          <button onClick={() => setUploadModalOpen(false)}>Close</button>
+        <div className="w-1/2 bg-gray-100 rounded">
+          <div className="float-right m-1">
+            <button onClick={() => setUploadModalOpen(false)}>
+              <FontAwesomeIcon icon={faTimes} /> Close
+            </button>
+          </div>
+          <UploadWizard />
         </div>
       </Modal>
     </>
