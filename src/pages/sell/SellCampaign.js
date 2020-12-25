@@ -96,7 +96,7 @@ const SellCampaign = (props) => {
               <FontAwesomeIcon icon={faTimes} /> Close
             </button>
           </div>
-          <UploadWizard />
+          <UploadWizard close={() => setUploadModalOpen(false)} />
         </div>
       </Modal>
     </>
