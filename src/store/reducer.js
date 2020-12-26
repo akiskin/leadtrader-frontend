@@ -1,27 +1,13 @@
 import { combineReducers } from "redux";
 
-import sellcampaigns from './sellcampaigns/reducer'
-import products from './products/reducer'
-
-const initialState = {
-  loggedIn: false,
-  user: undefined,
-};
-
-const auth = (state = initialState, action) => {
-  switch (action.type) {
-    case "LOGIN":
-      return { ...state, loggedIn: true };
-
-    default:
-      return state;
-  }
-};
+import auth from "./auth/reducer";
+import sellcampaigns from "./sellcampaigns/reducer";
+import products from "./products/reducer";
 
 const rootReducer = combineReducers({
   auth,
   sellcampaigns,
-  products
+  products,
 });
 
 export default rootReducer;

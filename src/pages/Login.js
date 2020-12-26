@@ -5,24 +5,35 @@ import { useHistory, useLocation } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSpinner } from "@fortawesome/free-solid-svg-icons";
 
+import { getCsrf, login as performLogin } from "common/requests/auth";
+import { ACTIONS } from "store/auth/actions";
+
 const Login = () => {
   let history = useHistory();
   let location = useLocation();
 
   const [isLoading, setLoading] = useState(false);
+  const [username, setUsername] = useState(process.env.REACT_APP_TEST_LOGIN);
+  const [password, setPassword] = useState(process.env.REACT_APP_TEST_PASSWORD);
 
   const dispatch = useDispatch();
 
   const { from } = location.state || { from: { pathname: "/" } };
 
-  const login = (e) => {
+  const login = async (e) => {
     e.preventDefault();
     setLoading(true);
 
-    setTimeout(() => {
-      dispatch({ type: "LOGIN" });
+    await getCsrf();
+
+    const [status, user] = await performLogin(username, password);
+
+    if (status === 200) {
+      dispatch({ type: ACTIONS.LOGIN_SUCCESS, user });
       history.replace(from);
-    }, 1500);
+    } else {
+      //TODO wrong login
+    }
   };
 
   return (
@@ -39,11 +50,15 @@ const Login = () => {
             type="text"
             className="border rounded-t h-8 pl-2 border-purple-200"
             placeholder="E-mail"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
           ></input>
           <input
-            type="text"
+            type="password"
             className="border border-t-0 rounded-b h-8 pl-2 border-purple-200"
             placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
           ></input>
         </div>
 
