@@ -1,4 +1,4 @@
-import apiClient from "./index";
+import apiClient from ".";
 
 export const getCsrf = async () => {
   await apiClient.get(process.env.REACT_APP_CSRF_URL);
