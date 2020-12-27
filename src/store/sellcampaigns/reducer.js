@@ -1,4 +1,3 @@
-import { parse } from "date-fns";
 import { ACTIONS } from "./actions";
 
 const initialState = {
@@ -15,10 +14,7 @@ const sellcampaigns = (state = initialState, action) => {
       return {
         ...state,
         isLoading: false,
-        list: action.data.map((item) => ({
-          ...item,
-          date: parse(item.date_id, "yyyyMMdd", new Date()),
-        })),
+        list: action.data,
       };
     case ACTIONS.SELLCAMPAIGNS_CREATING_START:
       return { ...state, isCreating: true };
@@ -26,13 +22,7 @@ const sellcampaigns = (state = initialState, action) => {
       return {
         ...state,
         isCreating: false,
-        list: [
-          ...state.list,
-          {
-            ...action.campaign,
-            date: parse(action.campaign.date_id, "yyyyMMdd", new Date()),
-          },
-        ],
+        list: [...state.list, action.campaign],
       };
     default:
       return state;
