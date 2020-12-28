@@ -18,7 +18,7 @@ const routes = [
   {
     path: "/sell/new",
     exact: true,
-    main: lazy(() => import("pages/NewSellCampaign")),
+    main: lazy(() => import("pages/sell/NewSellCampaign")),
   },
   {
     path: "/sell",
@@ -28,6 +28,20 @@ const routes = [
   {
     path: "/sell/:id",
     main: lazy(() => import("pages/sell/SellCampaign")),
+  },
+  {
+    path: "/buy/new",
+    exact: true,
+    main: lazy(() => import("pages/buy/NewBuyCampaign")),
+  },
+  {
+    path: "/buy",
+    exact: true,
+    main: lazy(() => import("pages/buy/BuyCampaigns")),
+  },
+  {
+    path: "/buy/:id",
+    main: lazy(() => import("pages/buy/BuyCampaign")),
   },
   {
     path: "/catalogs/products",

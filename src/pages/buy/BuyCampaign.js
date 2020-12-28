@@ -6,7 +6,6 @@ import { faClock } from "@fortawesome/free-regular-svg-icons";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
 import LoadingSpinner from "common/components/LoadingSpinner";
-import UploadWizard from "./components/UploadWizard";
 
 const SellCampaign = (props) => {
   const { id } = useParams();
@@ -23,7 +22,7 @@ const SellCampaign = (props) => {
         <div className="flex-1 mt-5 ml-6 mr-3">
           <div className="rounded bg-white px-3 py-1">
             <div className="text-lg font-semibold uppercase tracking-wide">
-              Sell Campaign Info
+              Buy Campaign Info
             </div>
             <div className="text-sm text-gray-500">
               Created: XXXXXX, ID: {id}
@@ -33,7 +32,7 @@ const SellCampaign = (props) => {
             </div>
             {isLoading ? <LoadingSpinner /> : <InfoBody />}
             <div className="text-gray-500 pt-4">
-              <Link to="/sell">← Back</Link>
+              <Link to="/buy">← Back</Link>
             </div>
           </div>
         </div>
@@ -77,7 +76,7 @@ const SellCampaign = (props) => {
               className="text-purple-500 border border-purple-500 rounded px-2 py-2 hover:bg-purple-100"
               onClick={() => setUploadModalOpen(true)}
             >
-              Upload
+              Download
             </button>
           </div>
         </div>
@@ -90,16 +89,12 @@ const SellCampaign = (props) => {
         className="grid place-items-center h-screen outline-none"
         style={{ overlay: { outline: "none" } }}
       >
-        <div className="bg-gray-100 rounded">
+        <div className="w-1/2 bg-gray-100 rounded">
           <div className="float-right m-1">
             <button onClick={() => setUploadModalOpen(false)}>
               <FontAwesomeIcon icon={faTimes} /> Close
             </button>
           </div>
-          <UploadWizard
-            campaignId={id}
-            close={() => setUploadModalOpen(false)}
-          />
         </div>
       </Modal>
     </>
@@ -114,13 +109,18 @@ const InfoBody = (props) => (
     </div>
 
     <div className="flex flex-row items-center mt-1">
-      <div className="w-1/4">Stop Price, $</div>
+      <div className="w-1/4">Max Price, $</div>
       <div>XXX</div>
     </div>
 
     <div className="flex flex-row items-center mt-1">
-      <div className="w-1/4">Expiration, days</div>
+      <div className="w-1/4">Budget, $</div>
       <div>XXX</div>
+    </div>
+
+    <div className="flex flex-row items-center mt-1">
+      <div className="w-1/4">Buying Rules</div>
+      <div>XXX-XXX-XXX</div>
     </div>
   </>
 );
@@ -128,32 +128,8 @@ const InfoBody = (props) => (
 const StatisticsBody = (props) => (
   <>
     <div className="flex flex-row items-center mt-1">
-      <div className="rounded-full h-4 w-4 bg-blue-400 mr-2" />
-      <div className="w-1/4">Uploaded</div>
-      <div>
-        50 leads <span className="italic">(min $100)</span>
-      </div>
-    </div>
-
-    <div className="flex flex-row items-center mt-1">
-      <div className="rounded-full h-4 w-4 bg-red-500 mr-2" />
-      <div className="w-1/4">Rejected</div>
-      <div>
-        5 leads <span className="italic">($10)</span>
-      </div>
-    </div>
-
-    <div className="flex flex-row items-center mt-1">
-      <div className="rounded-full h-4 w-4 bg-yellow-500 mr-2" />
-      <div className="w-1/4">On Sale</div>
-      <div>
-        10 leads <span className="italic">(min $20)</span>
-      </div>
-    </div>
-
-    <div className="flex flex-row items-center mt-1">
       <div className="rounded-full h-4 w-4 bg-green-500 mr-2" />
-      <div className="w-1/4">Sold</div>
+      <div className="w-1/4">Bought</div>
       <div>
         35 leads ⟶ <span className="font-semibold">$125</span>
       </div>
@@ -161,9 +137,9 @@ const StatisticsBody = (props) => (
 
     <div className="flex flex-row items-center mt-1">
       <div className="rounded-full h-4 w-4 bg-red-500 mr-2" />
-      <div className="w-1/4">Retired</div>
+      <div className="w-1/4">Budget Left</div>
       <div>
-        5 leads <span className="italic">($10)</span>
+        30% <span className="italic">($125)</span>
       </div>
     </div>
 
