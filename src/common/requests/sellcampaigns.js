@@ -25,6 +25,7 @@ export const createSellCampaign = async (
       product_id,
       stop_price,
       expiration,
+      status: 10,
     });
 
     if (response.status === 201) {
