@@ -31,6 +31,7 @@ export const createBuyCampaign = (
   budget,
   start,
   finish,
+  rules,
   history = undefined
 ) => async (dispatch) => {
   dispatch({ type: ACTIONS.BUYCAMPAIGNS_CREATING_START });
@@ -41,7 +42,8 @@ export const createBuyCampaign = (
     maxPrice,
     budget,
     start,
-    finish
+    finish,
+    rules
   );
 
   if (success) {

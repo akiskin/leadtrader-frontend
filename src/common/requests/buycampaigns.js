@@ -21,17 +21,20 @@ export const createBuyCampaign = async (
   max_price,
   budget,
   start,
-  finish
+  finish,
+  buy_rules
 ) => {
   try {
-    const response = await apiClient.post("/buycampaigns", {
+    const body = {
       name,
       product_id,
       max_price,
       budget,
       start,
       finish,
-    });
+      buy_rules,
+    };
+    const response = await apiClient.post("/buycampaigns", body);
 
     if (response.status === 201) {
       return [true, response.data];
