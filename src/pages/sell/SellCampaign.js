@@ -4,18 +4,47 @@ import Modal from "react-modal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClock } from "@fortawesome/free-regular-svg-icons";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import LoadingSpinner from "common/components/LoadingSpinner";
 import UploadWizard from "./components/UploadWizard";
+import { getSellCampaignLeads } from "common/requests/sellcampaigns";
 
 const SellCampaign = (props) => {
   const { id } = useParams();
 
   const [isLoading, setLoading] = useState(true);
 
+  const [leads, setLeads] = useState([]);
+
   const [uploadModalOpen, setUploadModalOpen] = useState(false);
 
-  setTimeout(() => setLoading(false), 2000);
+  useEffect(() => {
+    const getLeads = async (id) => {
+      const [success, data] = await getSellCampaignLeads(id);
+
+      if (success) {
+        const mapped = data.map((row) =>
+          Object.assign(
+            {
+              ...row,
+              created_at: new Date(row.created_at),
+            },
+            "transaction" in row
+              ? {
+                  transaction: {
+                    ...row.transaction,
+                    created_at: new Date(row.transaction.created_at),
+                  },
+                }
+              : {}
+          )
+        );
+        setLeads(mapped);
+        setLoading(false);
+      }
+    };
+    getLeads(id);
+  }, [id]);
 
   return (
     <>
@@ -67,9 +96,7 @@ const SellCampaign = (props) => {
         <div className="flex flex-row justify-between mx-3">
           <div>
             <div className="font-semibold text-2xl">Leads</div>
-            <div className="text-gray-400">
-              Click on a campaign to see details
-            </div>
+            <div className="text-gray-400">All leads uploaded so far</div>
           </div>
 
           <div className="flex flex-col justify-center">
@@ -82,7 +109,36 @@ const SellCampaign = (props) => {
           </div>
         </div>
 
-        <div className="my-5">table</div>
+        <div className="my-5">
+          <table className="w-full border-collapse">
+            <thead>
+              <tr className="uppercase border-b-2 border-gray-100 text-gray-400">
+                <th className="pl-6 font-normal text-left">Upload Date</th>
+                <th className="font-normal text-left">ID</th>
+                <th className="font-normal text-left">Status</th>
+                <th className="font-normal text-left">Sell Date</th>
+                <th className="font-normal text-left">Price</th>
+              </tr>
+            </thead>
+            <tbody>
+              {leads.map((lead) => (
+                <tr key={lead.id}>
+                  <td className="pl-6">{lead.created_at.toLocaleString()}</td>
+                  <td>{lead.id}</td>
+                  <td>{lead.status}</td>
+                  <td>
+                    {"transaction" in lead
+                      ? lead.transaction.created_at.toLocaleString()
+                      : null}
+                  </td>
+                  <td>
+                    {"transaction" in lead ? lead.transaction.price : null}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
 
       <Modal

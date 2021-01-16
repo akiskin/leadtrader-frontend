@@ -1,20 +1,73 @@
 import { Link, useParams } from "react-router-dom";
 import Modal from "react-modal";
+import FileSaver from "file-saver";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClock } from "@fortawesome/free-regular-svg-icons";
-import { faTimes } from "@fortawesome/free-solid-svg-icons";
-import { useState } from "react";
+import { faTimes, faFileDownload } from "@fortawesome/free-solid-svg-icons";
+import { useEffect, useState } from "react";
 import LoadingSpinner from "common/components/LoadingSpinner";
+import {
+  exportBuyCampaignLeads,
+  getBuyCampaignLeads,
+} from "common/requests/buycampaigns";
 
 const SellCampaign = (props) => {
   const { id } = useParams();
 
   const [isLoading, setLoading] = useState(true);
 
+  const [leads, setLeads] = useState([]);
+
   const [uploadModalOpen, setUploadModalOpen] = useState(false);
 
-  setTimeout(() => setLoading(false), 2000);
+  const [filterStartDateString, setFilterStartDateString] = useState("");
+  const [filterEndDateString, setFilterEndDateString] = useState("");
+
+  useEffect(() => {
+    const getLeads = async (id) => {
+      const [success, data] = await getBuyCampaignLeads(id);
+
+      if (success) {
+        const mapped = data.map((row) =>
+          Object.assign(
+            {
+              ...row,
+              created_at: new Date(row.created_at),
+            },
+            "lead" in row
+              ? {
+                  lead: {
+                    ...row.lead,
+                    created_at: new Date(row.lead.created_at),
+                  },
+                }
+              : {}
+          )
+        );
+        setLeads(mapped);
+        setLoading(false);
+      }
+    };
+    getLeads(id);
+  }, [id]);
+
+  const filteredLeads = () => {
+    return leads.filter((lead) => {
+      const startDate = filterStartDateString
+        ? new Date(filterStartDateString)
+        : undefined;
+
+      const endDate = filterEndDateString
+        ? new Date(filterEndDateString)
+        : undefined;
+
+      return (
+        (startDate ? lead.created_at >= startDate : true) &&
+        (endDate ? lead.created_at <= endDate : true)
+      );
+    });
+  };
 
   return (
     <>
@@ -67,7 +120,24 @@ const SellCampaign = (props) => {
           <div>
             <div className="font-semibold text-2xl">Leads</div>
             <div className="text-gray-400">
-              Click on a campaign to see details
+              Filter dates to narrow list for downloading: from{" "}
+              <input
+                type="datetime-local"
+                className="border border-gray-200 hover:border-gray-500 rounded"
+                value={filterStartDateString}
+                onChange={(e) => {
+                  setFilterStartDateString(e.target.value);
+                }}
+              ></input>{" "}
+              to{" "}
+              <input
+                type="datetime-local"
+                className="border border-gray-200 hover:border-gray-500 rounded"
+                value={filterEndDateString}
+                onChange={(e) => {
+                  setFilterEndDateString(e.target.value);
+                }}
+              ></input>
             </div>
           </div>
 
@@ -81,7 +151,26 @@ const SellCampaign = (props) => {
           </div>
         </div>
 
-        <div className="my-5">table</div>
+        <div className="my-5">
+          <table className="w-full border-collapse">
+            <thead>
+              <tr className="uppercase border-b-2 border-gray-100 text-gray-400">
+                <th className="pl-6 font-normal text-left">Buy Date</th>
+                <th className="font-normal text-left">ID</th>
+                <th className="font-normal text-left">Price</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredLeads().map((lead) => (
+                <tr key={lead.id}>
+                  <td className="pl-6">{lead.created_at.toLocaleString()}</td>
+                  <td>{lead.lead.id}</td>
+                  <td>{lead.total_price}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
 
       <Modal
@@ -89,12 +178,17 @@ const SellCampaign = (props) => {
         className="grid place-items-center h-screen outline-none"
         style={{ overlay: { outline: "none" } }}
       >
-        <div className="w-1/2 bg-gray-100 rounded">
+        <div className="w-11/12 bg-gray-100 rounded">
           <div className="float-right m-1">
             <button onClick={() => setUploadModalOpen(false)}>
               <FontAwesomeIcon icon={faTimes} /> Close
             </button>
           </div>
+          <DownloadTool
+            campaign={id}
+            startDateString={filterStartDateString}
+            endDateString={filterEndDateString}
+          />
         </div>
       </Modal>
     </>
@@ -155,5 +249,103 @@ const StatisticsBody = (props) => (
     </div>
   </>
 );
+
+const DownloadTool = (props) => {
+  const [loading, setLoading] = useState(true);
+
+  const [leads, setLeads] = useState([]);
+
+  useEffect(() => {
+    const getLeads = async (id, startDateString, endDateString) => {
+      const [success, data] = await exportBuyCampaignLeads(
+        id,
+        startDateString,
+        endDateString
+      );
+
+      if (success) {
+        setLeads(data);
+        setLoading(false);
+      }
+    };
+    getLeads(props.campaign, props.startDateString, props.endDateString);
+    setLoading(false);
+  }, [props.campaign, props.startDateString, props.endDateString]);
+
+  const startDownload = (e) => {
+    const csv = leads
+      .map((el) =>
+        Object.values(el)
+          .map((text) =>
+            text
+              .toString()
+              .replace(/\\/g, "\\\\")
+              .replace(/\n/g, "\\n")
+              .replace(/,/g, "\\,")
+          )
+          .join(",")
+      )
+      .join("\n");
+    const csvData = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+
+    FileSaver.saveAs(csvData, "data.csv");
+  };
+
+  if (loading) {
+    return (
+      <div className="py-8">
+        <LoadingSpinner />
+      </div>
+    );
+  }
+
+  return (
+    <div className="py-2 px-2">
+      <div className="font-bold">Leads Detailed Information</div>
+      <table className="w-full border-collapse">
+        <thead>
+          <tr className="uppercase border-b-2 border-gray-400 text-gray-400">
+            <th className="font-normal text-left">Buy Date</th>
+            <th className="font-normal text-left">ID</th>
+            <th className="font-normal text-left">document_id</th>
+            <th className="font-normal text-left">loan_purpose</th>
+            <th className="font-normal text-left">loan_amount</th>
+            <th className="font-normal text-left">first_name</th>
+            <th className="font-normal text-left">last_name</th>
+            <th className="font-normal text-left">address</th>
+            <th className="font-normal text-left">phone</th>
+            <th className="font-normal text-left">email</th>
+          </tr>
+        </thead>
+        <tbody>
+          {leads.map((lead) => (
+            <tr key={lead.id}>
+              <td className="font-normal text-left">
+                {new Date(lead.purchase_date).toLocaleString()}
+              </td>
+              <td>{lead.id}</td>
+              <td className="font-normal text-left">{lead.document_id}</td>
+              <td className="font-normal text-left">{lead.loan_purpose}</td>
+              <td className="font-normal text-left">{lead.loan_amount}</td>
+              <td className="font-normal text-left">{lead.first_name}</td>
+              <td className="font-normal text-left">{lead.last_name}</td>
+              <td className="font-normal text-left">{lead.address}</td>
+              <td className="font-normal text-left">{lead.phone}</td>
+              <td className="font-normal text-left">{lead.email}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      <div className="flex justify-center h-10 items-center">
+        <button
+          onClick={startDownload}
+          className="w-20 border rounded border-purple-500 px-2 py-1 ring-2"
+        >
+          <FontAwesomeIcon icon={faFileDownload} /> CSV
+        </button>
+      </div>
+    </div>
+  );
+};
 
 export default SellCampaign;

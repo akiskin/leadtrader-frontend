@@ -46,3 +46,47 @@ export const createBuyCampaign = async (
     return [false, e.toString()];
   }
 };
+
+export const getBuyCampaignLeads = async (id) => {
+  try {
+    const response = await apiClient.get(`/buycampaigns/${id}/leads`);
+
+    if (response.status === 200) {
+      return [true, response.data.data];
+    } else {
+      return [false, response.status];
+    }
+    //TODO 401?
+  } catch (e) {
+    return [false, e.toString()];
+  }
+};
+
+export const exportBuyCampaignLeads = async (
+  id,
+  startDateString,
+  endDateString
+) => {
+  const params = {};
+  if (startDateString) {
+    params["start"] = new Date(startDateString).toISOString();
+  }
+  if (endDateString) {
+    params["end"] = new Date(endDateString).toISOString();
+  }
+
+  try {
+    const response = await apiClient.get(`/buycampaigns/${id}/leads/export`, {
+      params,
+    });
+
+    if (response.status === 200) {
+      return [true, response.data];
+    } else {
+      return [false, response.status];
+    }
+    //TODO 401?
+  } catch (e) {
+    return [false, e.toString()];
+  }
+};

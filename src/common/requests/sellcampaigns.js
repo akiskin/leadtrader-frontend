@@ -56,3 +56,18 @@ export const bulkUploadLeads = async (sell_campaign, lead_data) => {
     return [false, e.toString()];
   }
 };
+
+export const getSellCampaignLeads = async (id) => {
+  try {
+    const response = await apiClient.get(`/sellcampaigns/${id}/leads`);
+
+    if (response.status === 200) {
+      return [true, response.data.data];
+    } else {
+      return [false, response.status];
+    }
+    //TODO 401?
+  } catch (e) {
+    return [false, e.toString()];
+  }
+};
