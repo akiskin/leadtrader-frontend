@@ -39,3 +39,18 @@ export const logout = async () => {
     return [false, e];
   }
 };
+
+export const register = async (name, email, password, company) => {
+  try {
+    const response = await apiClient.post("/register", {
+      name,
+      email,
+      password,
+      company,
+    });
+
+    return [response.status, response.data];
+  } catch (e) {
+    return [false, e];
+  }
+};
