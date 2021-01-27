@@ -9,6 +9,19 @@ import { Provider } from "react-redux";
 import rootReducer from "./store/reducer";
 import thunk from "redux-thunk";
 
+import * as Sentry from "@sentry/react";
+import { Integrations } from "@sentry/tracing";
+
+Sentry.init({
+  dsn:
+    "https://c827856bbe0a455b924b15c7a97306ab@o511607.ingest.sentry.io/5609138",
+  integrations: [new Integrations.BrowserTracing()],
+
+  // We recommend adjusting this value in production, or using tracesSampler
+  // for finer control
+  tracesSampleRate: 1.0,
+});
+
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
 const store = createStore(
