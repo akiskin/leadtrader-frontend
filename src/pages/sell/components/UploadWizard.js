@@ -88,14 +88,18 @@ const UploadWizard = (props) => {
     );
 
     const [success, data] = await bulkUploadLeads(props.campaignId, leadData);
-    console.log(data);
 
     if (success) {
       setStatus(STATUS.UPLOAD_SUCCESS);
-      //TODO show results
+      //TODO show results for each row using correlated rows from response
+      setFileContent(
+        fileContent.map((f) => ({ ...f, status: ROW_STATUS.UPLOAD_SUCCESS }))
+      );
+    } else {
+      console.log(data);
+      //TODO error
+      //props.close(); //Don't need to close?? Display results instead
     }
-    //TODO error
-    //props.close(); //Don't need to close?? Display results instead
   };
 
   return (
@@ -150,6 +154,19 @@ const UploadWizard = (props) => {
           >
             Upload
           </button>
+        </div>
+      ) : null}
+
+      {status === STATUS.UPLOAD_SUCCESS ? (
+        <div className="mt-3 flex justify-center h-10 items-center">
+          <span>
+            <span className="text-green-900">
+              <FontAwesomeIcon icon={faCheck} className="mr-1" size="lg" />
+            </span>{" "}
+            <span className="font-semibold">
+              Leads uploaded and queued for processing
+            </span>
+          </span>
         </div>
       ) : null}
     </div>
