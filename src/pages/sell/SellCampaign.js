@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import LoadingSpinner from "common/components/LoadingSpinner";
 import UploadWizard from "./components/UploadWizard";
 import { getSellCampaignLeads } from "common/requests/sellcampaigns";
+import { readableStatus } from "common/consts/leads";
 
 const SellCampaign = (props) => {
   const { id } = useParams();
@@ -125,7 +126,7 @@ const SellCampaign = (props) => {
                 <tr key={lead.id}>
                   <td className="pl-6">{lead.created_at.toLocaleString()}</td>
                   <td>{lead.id}</td>
-                  <td>{lead.status}</td>
+                  <td>{readableStatus(lead.status)}</td>
                   <td>
                     {"transaction" in lead
                       ? lead.transaction.created_at.toLocaleString()
