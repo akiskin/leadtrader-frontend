@@ -33,6 +33,7 @@ export const createBuyCampaign = async (
       start,
       finish,
       buy_rules,
+      status: 10,
     };
     const response = await apiClient.post("/buycampaigns", body);
 

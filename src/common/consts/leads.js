@@ -6,13 +6,13 @@ export const LEAD_STATUS = {
     presentation: "Prepared",
   },
   101: {
-    presentation: "Prep Error - Invalid DocID",
+    presentation: "Error - Invalid DocID",
   },
   102: {
-    presentation: "Prep Error - No Raw Data",
+    presentation: "Error - No Raw Data",
   },
   103: {
-    presentation: "Prep Error - Other",
+    presentation: "Error - Postprocessing",
   },
   200: {
     presentation: "Sold",
