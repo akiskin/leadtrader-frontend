@@ -8,10 +8,15 @@ import { useEffect, useState } from "react";
 import LoadingSpinner from "common/components/LoadingSpinner";
 import UploadWizard from "./components/UploadWizard";
 import { getSellCampaignLeads } from "common/requests/sellcampaigns";
-import { readableStatus } from "common/consts/leads";
+import { readableStatus } from "common/consts/sellCampaigns";
+import { useSelector } from "react-redux";
 
 const SellCampaign = (props) => {
   const { id } = useParams();
+
+  const sellCampaign = useSelector((store) =>
+    store.sellcampaigns.list.find((sc) => sc.id === id)
+  );
 
   const [isLoading, setLoading] = useState(true);
 
@@ -56,12 +61,20 @@ const SellCampaign = (props) => {
               Sell Campaign Info
             </div>
             <div className="text-sm text-gray-500">
-              Created: XXXXXX, ID: {id}
+              Created:{" "}
+              <span className="font-medium">
+                {sellCampaign.date.toLocaleString()}
+              </span>
+              , ID: <span className="font-medium">{id}</span>
             </div>
             <div className="my-2">
               <hr />
             </div>
-            {isLoading ? <LoadingSpinner /> : <InfoBody />}
+            {isLoading ? (
+              <LoadingSpinner />
+            ) : (
+              <InfoBody campaign={sellCampaign} />
+            )}
             <div className="text-gray-500 pt-4">
               <Link to="/sell">← Back</Link>
             </div>
@@ -75,7 +88,10 @@ const SellCampaign = (props) => {
                   Actions
                 </div>
                 <div className="text-sm text-gray-500">
-                  Current status: <span className="font-bold">Active</span>
+                  Current status:{" "}
+                  <span className="font-bold">
+                    {readableStatus(sellCampaign.status)}
+                  </span>
                 </div>
               </div>
               <div className="flex flex-col justify-center">
@@ -88,7 +104,11 @@ const SellCampaign = (props) => {
             <div className="my-2">
               <hr />
             </div>
-            {isLoading ? <LoadingSpinner /> : <StatisticsBody />}
+            {isLoading ? (
+              <LoadingSpinner />
+            ) : (
+              <StatisticsBody campaign={sellCampaign} />
+            )}
           </div>
         </div>
       </div>
@@ -167,17 +187,17 @@ const InfoBody = (props) => (
   <>
     <div className="flex flex-row items-center mt-1">
       <div className="w-1/4">Product</div>
-      <div>XXX</div>
+      <div className="font-medium">{props.campaign.product.name}</div>
     </div>
 
     <div className="flex flex-row items-center mt-1">
       <div className="w-1/4">Stop Price, $</div>
-      <div>XXX</div>
+      <div className="font-medium">{props.campaign.stop_price}</div>
     </div>
 
     <div className="flex flex-row items-center mt-1">
       <div className="w-1/4">Expiration, days</div>
-      <div>XXX</div>
+      <div className="font-medium">{props.campaign.expiration}</div>
     </div>
   </>
 );

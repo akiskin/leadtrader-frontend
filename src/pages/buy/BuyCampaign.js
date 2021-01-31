@@ -11,9 +11,15 @@ import {
   exportBuyCampaignLeads,
   getBuyCampaignLeads,
 } from "common/requests/buycampaigns";
+import { useSelector } from "react-redux";
+import { readableStatus } from "common/consts/buyCampaigns";
 
 const SellCampaign = (props) => {
   const { id } = useParams();
+
+  const buyCampaign = useSelector((store) =>
+    store.buycampaigns.list.find((sc) => sc.id === id)
+  );
 
   const [isLoading, setLoading] = useState(true);
 
@@ -78,12 +84,20 @@ const SellCampaign = (props) => {
               Buy Campaign Info
             </div>
             <div className="text-sm text-gray-500">
-              Created: XXXXXX, ID: {id}
+              Created:{" "}
+              <span className="font-medium">
+                {buyCampaign.date.toLocaleString()}
+              </span>
+              , ID: <span className="font-medium">{id}</span>
             </div>
             <div className="my-2">
               <hr />
             </div>
-            {isLoading ? <LoadingSpinner /> : <InfoBody />}
+            {isLoading ? (
+              <LoadingSpinner />
+            ) : (
+              <InfoBody campaign={buyCampaign} />
+            )}
             <div className="text-gray-500 pt-4">
               <Link to="/buy">← Back</Link>
             </div>
@@ -97,7 +111,10 @@ const SellCampaign = (props) => {
                   Actions
                 </div>
                 <div className="text-sm text-gray-500">
-                  Current status: <span className="font-bold">Active</span>
+                  Current status:{" "}
+                  <span className="font-bold">
+                    {readableStatus(buyCampaign.status)}
+                  </span>
                 </div>
               </div>
               <div className="flex flex-col justify-center">
@@ -199,22 +216,22 @@ const InfoBody = (props) => (
   <>
     <div className="flex flex-row items-center mt-1">
       <div className="w-1/4">Product</div>
-      <div>XXX</div>
+      <div className="font-medium">{props.campaign.product.name}</div>
     </div>
 
     <div className="flex flex-row items-center mt-1">
       <div className="w-1/4">Max Price, $</div>
-      <div>XXX</div>
+      <div className="font-medium">{props.campaign.max_price}</div>
     </div>
 
     <div className="flex flex-row items-center mt-1">
       <div className="w-1/4">Budget, $</div>
-      <div>XXX</div>
+      <div className="font-medium">{props.campaign.budget}</div>
     </div>
 
     <div className="flex flex-row items-center mt-1">
       <div className="w-1/4">Buying Rules</div>
-      <div>XXX-XXX-XXX</div>
+      <div className="font-medium">x{props.campaign.buy_rules.length} used</div>
     </div>
   </>
 );

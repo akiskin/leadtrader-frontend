@@ -5,6 +5,7 @@ import { format } from "date-fns";
 import { useDispatch, useSelector } from "react-redux";
 import LoadingSpinner from "common/components/LoadingSpinner";
 import { getBuyCampaigns } from "store/buycampaigns/actions";
+import { readableStatus } from "common/consts/buyCampaigns";
 
 const BuyCampaigns = () => (
   <>
@@ -86,7 +87,7 @@ const BuyCampaignList = () => {
           >
             <td className="pl-6 py-3">{format(campaign.date, "d MMM yy")}</td>
             <td>{campaign.name}</td>
-            <td>{campaign.status}</td>
+            <td>{readableStatus(campaign.status)}</td>
             <td>
               {campaign.start} - {campaign.finish}
             </td>

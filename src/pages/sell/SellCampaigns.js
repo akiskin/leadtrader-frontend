@@ -5,6 +5,7 @@ import { format } from "date-fns";
 import { useDispatch, useSelector } from "react-redux";
 import { getSellCampaigns } from "store/sellcampaigns/actions";
 import LoadingSpinner from "common/components/LoadingSpinner";
+import { readableStatus } from "common/consts/sellCampaigns";
 
 const SellCampaigns = () => (
   <>
@@ -84,7 +85,7 @@ const SellCampaignList = () => {
             onClick={() => history.push(`/sell/${campaign.id}`)}
           >
             <td className="pl-6 py-3">{format(campaign.date, "d MMM yy")}</td>
-            <td>{campaign.status}</td>
+            <td>{readableStatus(campaign.status)}</td>
             <td>{campaign.product.name}</td>
             <td>{campaign.leads_total}</td>
             <td>{campaign.leads_sold}</td>
