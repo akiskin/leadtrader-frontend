@@ -9,6 +9,7 @@ import LoadingSpinner from "common/components/LoadingSpinner";
 import UploadWizard from "./components/UploadWizard";
 import { getSellCampaignLeads } from "common/requests/sellcampaigns";
 import { readableStatus } from "common/consts/sellCampaigns";
+import { readableStatus as leadStatus } from "common/consts/leads";
 import { useSelector } from "react-redux";
 
 const SellCampaign = (props) => {
@@ -146,7 +147,7 @@ const SellCampaign = (props) => {
                 <tr key={lead.id}>
                   <td className="pl-6">{lead.created_at.toLocaleString()}</td>
                   <td>{lead.id}</td>
-                  <td>{readableStatus(lead.status)}</td>
+                  <td>{leadStatus(lead.status)}</td>
                   <td>
                     {"transaction" in lead
                       ? lead.transaction.created_at.toLocaleString()
