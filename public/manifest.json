@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "Leadtrader: Client",
+  "name": "Leadtrader Client Portal",
   "icons": [
     {
       "src": "favicon.ico",
