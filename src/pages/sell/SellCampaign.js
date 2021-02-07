@@ -7,10 +7,17 @@ import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import { useEffect, useState } from "react";
 import LoadingSpinner from "common/components/LoadingSpinner";
 import UploadWizard from "./components/UploadWizard";
-import { getSellCampaignLeads } from "common/requests/sellcampaigns";
-import { readableStatus } from "common/consts/sellCampaigns";
+import {
+  getSellCampaignLeads,
+  updateSellCampaign,
+} from "common/requests/sellcampaigns";
+import {
+  readableStatus,
+  SELL_CAMPAIGN_STATUS,
+} from "common/consts/sellCampaigns";
 import { readableStatus as leadStatus } from "common/consts/leads";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { ACTIONS } from "store/sellcampaigns/actions";
 
 const SellCampaign = (props) => {
   const { id } = useParams();
@@ -96,9 +103,7 @@ const SellCampaign = (props) => {
                 </div>
               </div>
               <div className="flex flex-col justify-center">
-                <button className="text-red-500 border border-red-500 rounded px-2 py-2 hover:bg-red-100">
-                  Stop
-                </button>
+                <ControlButtons campaign={sellCampaign} />
               </div>
             </div>
 
@@ -257,5 +262,56 @@ const StatisticsBody = (props) => (
     </div>
   </>
 );
+
+const ControlButtons = (props) => {
+  const dispatch = useDispatch();
+
+  const [loading, setLoading] = useState(false);
+
+  const updateStatus = async (newStatus) => {
+    setLoading(true);
+
+    const [success, data] = await updateSellCampaign(props.campaign.id, {
+      status: newStatus,
+    });
+
+    if (success) {
+      dispatch({
+        type: ACTIONS.SELLCAMPAIGNS_UPDATE_ONE,
+        campaign: { ...data, date: new Date(data.created_at) },
+      });
+
+      setLoading(false);
+    } else {
+      setLoading(false);
+    }
+  };
+  const start = (e) => updateStatus(SELL_CAMPAIGN_STATUS.ACTIVE);
+  const stop = (e) => updateStatus(SELL_CAMPAIGN_STATUS.PAUSED);
+
+  const currentStatus = props.campaign.status;
+
+  if (currentStatus === SELL_CAMPAIGN_STATUS.ACTIVE) {
+    return (
+      <button
+        className="text-red-500 border border-red-500 rounded px-2 py-2 hover:bg-red-100"
+        onClick={stop}
+        disabled={loading}
+      >
+        {loading ? <LoadingSpinner size="" /> : "Stop"}
+      </button>
+    );
+  } else {
+    return (
+      <button
+        className="text-green-500 border border-green-500 rounded px-2 py-2 hover:bg-green-100"
+        onClick={start}
+        disabled={loading}
+      >
+        {loading ? <LoadingSpinner size="" /> : "Start"}
+      </button>
+    );
+  }
+};
 
 export default SellCampaign;

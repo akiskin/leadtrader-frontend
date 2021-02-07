@@ -24,6 +24,15 @@ const buycampaigns = (state = initialState, action) => {
         isCreating: false,
         list: [...state.list, action.campaign],
       };
+    case ACTIONS.BUYCAMPAIGNS_UPDATE_ONE:
+      return {
+        ...state,
+        list: [
+          ...state.list.filter((c) => c.id !== action.campaign.id),
+          action.campaign,
+        ],
+      };
+
     default:
       return state;
   }

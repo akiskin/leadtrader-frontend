@@ -10,11 +10,16 @@ import LoadingSpinner from "common/components/LoadingSpinner";
 import {
   exportBuyCampaignLeads,
   getBuyCampaignLeads,
+  updateBuyCampaign,
 } from "common/requests/buycampaigns";
-import { useSelector } from "react-redux";
-import { readableStatus } from "common/consts/buyCampaigns";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  BUY_CAMPAIGN_STATUS,
+  readableStatus,
+} from "common/consts/buyCampaigns";
+import { ACTIONS } from "store/buycampaigns/actions";
 
-const SellCampaign = (props) => {
+const BuyCampaign = (props) => {
   const { id } = useParams();
 
   const buyCampaign = useSelector((store) =>
@@ -81,7 +86,7 @@ const SellCampaign = (props) => {
         <div className="flex-1 mt-5 ml-6 mr-3">
           <div className="rounded bg-white px-3 py-1">
             <div className="text-lg font-semibold uppercase tracking-wide">
-              Buy Campaign Info
+              {buyCampaign.name}
             </div>
             <div className="text-sm text-gray-500">
               Created:{" "}
@@ -118,9 +123,7 @@ const SellCampaign = (props) => {
                 </div>
               </div>
               <div className="flex flex-col justify-center">
-                <button className="text-red-500 border border-red-500 rounded px-2 py-2 hover:bg-red-100">
-                  Stop
-                </button>
+                <ControlButtons campaign={buyCampaign} />
               </div>
             </div>
 
@@ -365,4 +368,55 @@ const DownloadTool = (props) => {
   );
 };
 
-export default SellCampaign;
+const ControlButtons = (props) => {
+  const dispatch = useDispatch();
+
+  const [loading, setLoading] = useState(false);
+
+  const updateStatus = async (newStatus) => {
+    setLoading(true);
+
+    const [success, data] = await updateBuyCampaign(props.campaign.id, {
+      status: newStatus,
+    });
+
+    if (success) {
+      dispatch({
+        type: ACTIONS.BUYCAMPAIGNS_UPDATE_ONE,
+        campaign: { ...data, date: new Date(data.created_at) },
+      });
+
+      setLoading(false);
+    } else {
+      setLoading(false);
+    }
+  };
+  const start = (e) => updateStatus(BUY_CAMPAIGN_STATUS.ACTIVE);
+  const stop = (e) => updateStatus(BUY_CAMPAIGN_STATUS.PAUSED);
+
+  const currentStatus = props.campaign.status;
+
+  if (currentStatus === BUY_CAMPAIGN_STATUS.ACTIVE) {
+    return (
+      <button
+        className="text-red-500 border border-red-500 rounded px-2 py-2 hover:bg-red-100"
+        onClick={stop}
+        disabled={loading}
+      >
+        {loading ? <LoadingSpinner size="" /> : "Stop"}
+      </button>
+    );
+  } else {
+    return (
+      <button
+        className="text-green-500 border border-green-500 rounded px-2 py-2 hover:bg-green-100"
+        onClick={start}
+        disabled={loading}
+      >
+        {loading ? <LoadingSpinner size="" /> : "Start"}
+      </button>
+    );
+  }
+};
+
+export default BuyCampaign;
