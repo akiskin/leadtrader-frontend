@@ -24,20 +24,7 @@ const BuyCampaigns = () => (
           </div>
         </div>
       </div>
-      <div className="flex-1 mt-5 ml-3 mr-6">
-        <div className="rounded bg-white px-3 py-1">
-          <div className="flex flex-row items-center my-1 h-12">
-            <span className="ml-1">
-              Links:{" "}
-              <Link to="/catalogs/products">
-                <span className="underline text-purple-500">
-                  Available Products
-                </span>
-              </Link>
-            </span>
-          </div>
-        </div>
-      </div>
+      <div className="flex-1 mt-5 ml-3 mr-6"></div>
     </div>
 
     <div className="rounded bg-white py-1 mx-6 mt-6">
