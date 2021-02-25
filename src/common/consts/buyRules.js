@@ -13,6 +13,17 @@ export const DECISION_POINT_OPERATORS = {
 };
 
 export const DECISION_POINTS = {
+  daysSinceLastTransaction: {
+    presentation: "Days since last bank transaction",
+    description: "Count",
+    type: DECISION_POINT_VALUE_TYPES.INTEGER,
+    operators: [
+      DECISION_POINT_OPERATORS.LT,
+      DECISION_POINT_OPERATORS.LTE,
+      DECISION_POINT_OPERATORS.EQ,
+    ],
+  },
+
   DM004: {
     presentation: "Total number of dishonours",
     description: "Count",

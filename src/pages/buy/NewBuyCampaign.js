@@ -68,6 +68,11 @@ const NewBuyCampaign = () => {
     setShowingNewRule(false);
   };
 
+  const cancelAddingBuyRule = () => {
+    console.log("cancelling");
+    setShowingNewRule(false);
+  };
+
   const deleteBuyRule = (index) => {
     const localRules = [...rules];
     localRules.splice(index, 1);
@@ -76,7 +81,7 @@ const NewBuyCampaign = () => {
 
   return (
     <div className="grid place-items-center h-screen">
-      <div className="flex flex-col border border-gray-100 rounded bg-white py-5 px-10 space-y-5 w-2/3">
+      <div className="flex flex-col border border-gray-100 rounded bg-white py-5 px-10 space-y-5 w-3/4">
         <div className="text-2xl">Create new Buy Campaign</div>
         <div className="flex flex-row w-full">
           <div className="flex flex-col space-y-4 w-1/2 mr-2">
@@ -94,27 +99,6 @@ const NewBuyCampaign = () => {
               <div className="pt-1 text-sm break-normal text-gray-500">
                 Description for better identification, ie:{" "}
                 <span className="italic">Dec - small pers loans</span>
-              </div>
-            </div>
-
-            <div>
-              <div className="pb-1 uppercase text-gray-500">Product</div>
-              <div>
-                <select
-                  className="border rounded h-8 pl-2 border-purple-200 w-full"
-                  value={selectedProductId}
-                  onChange={(e) => setSelectedProductId(e.target.value)}
-                >
-                  {products.map((product) => (
-                    <option key={product.id} value={product.id}>
-                      {product.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div className="pt-1 text-sm break-normal text-gray-500">
-                Product determines market (country, currency) and basic
-                filtering
               </div>
             </div>
 
@@ -189,18 +173,41 @@ const NewBuyCampaign = () => {
           </div>
           <div className="flex flex-col space-y-4 w-1/2 ml-2">
             <div>
+              <div className="pb-1 uppercase text-gray-500">Product</div>
+              <div>
+                <select
+                  className="border rounded h-8 pl-2 border-purple-200 w-full"
+                  value={selectedProductId}
+                  onChange={(e) => setSelectedProductId(e.target.value)}
+                >
+                  {products.map((product) => (
+                    <option key={product.id} value={product.id}>
+                      {product.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="pt-1 text-sm break-normal text-gray-500">
+                Product determines market (country, currency) and basic
+                filtering
+              </div>
+            </div>
+
+            <div>
               <div className="pb-1 uppercase text-gray-500">
-                Lead Selection Rules
+                Additional Lead Selection Rules
               </div>
               <BuyRules rules={rules} delete={deleteBuyRule} />
               {showingNewRule ? (
-                <NewBuyRule save={addBuyRule} />
+                <NewBuyRule save={addBuyRule} cancel={cancelAddingBuyRule} />
               ) : (
                 <button
                   onClick={(e) => setShowingNewRule(true)}
-                  className={"border rounded px-1 py-1 my-2 border-purple-500"}
+                  className={
+                    "border rounded px-1 py-1 my-2 border-purple-200 hover:bg-purple-200"
+                  }
                 >
-                  Add another rule
+                  Add rule
                 </button>
               )}
             </div>
@@ -262,7 +269,7 @@ const NewBuyRule = (props) => {
     const selectedDp = e.target.value;
 
     setDp(selectedDp);
-    setOp("");
+    setOp(DECISION_POINTS[selectedDp].operators[0]);
     setValue(0);
   };
 
@@ -278,11 +285,15 @@ const NewBuyRule = (props) => {
         <select
           value={dp}
           onChange={onDpChange}
-          className="appearance-none hover:shadow-inner border"
+          className="appearance-none hover:shadow-inner border overflow-hidden overflow-ellipsis w-2/3"
         >
           <option value="">--select--</option>
           {Object.keys(DECISION_POINTS).map((key) => (
-            <option key={key} value={key}>
+            <option
+              key={key}
+              value={key}
+              className=" w-full overflow-ellipsis overflow-hidden"
+            >
               {DECISION_POINTS[key].presentation}
             </option>
           ))}
@@ -292,7 +303,6 @@ const NewBuyRule = (props) => {
           onChange={(e) => setOp(e.target.value)}
           className="appearance-none hover:shadow-inner border"
         >
-          <option value=""></option>
           {dp
             ? DECISION_POINTS[dp].operators.map((operator, i) => (
                 <option key={i} value={operator}>
@@ -311,6 +321,9 @@ const NewBuyRule = (props) => {
       </div>
       <div className="text-green-700 cursor-pointer" onClick={onSave}>
         <FontAwesomeIcon icon={faCheck} />
+      </div>
+      <div className="text-red-900 cursor-pointer pl-1" onClick={props.cancel}>
+        <FontAwesomeIcon icon={faTrashAlt} />
       </div>
     </div>
   );
