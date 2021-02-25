@@ -57,12 +57,6 @@ const SingleLink = (props) => (
   </div>
 );
 
-export const ForgotPasswordLink = () => (
-  <div className="pl-4 pr-4">
-    <SingleLink to="/" text="Forgot Password?" />
-  </div>
-);
-
 export const Logout = () => {
   const dispatch = useDispatch();
 

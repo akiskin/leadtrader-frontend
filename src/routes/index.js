@@ -9,11 +9,7 @@ const routes = [
     path: "/",
     exact: true,
     main: lazy(() => import("pages/Dashboard")),
-    sidebar: () => (
-      <div className="bg-gradient-to-r from-purple-400 via-pink-500 to-red-500">
-        Additional links and info
-      </div>
-    ),
+    sidebar: () => <div></div>,
   },
   {
     path: "/sell/new",
