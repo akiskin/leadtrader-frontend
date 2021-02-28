@@ -28,9 +28,11 @@ const BuyCampaigns = () => (
     </div>
 
     <div className="rounded bg-white py-1 mx-6 mt-6">
-      <div className="mt-5 mx-6 font-semibold text-2xl">All Buy Campaigns</div>
+      <div className="mt-5 mx-6 font-semibold text-2xl">Buy Campaigns</div>
       <div className="mx-6 text-gray-400">
-        Click on a campaign to see details
+        Showing{" "}
+        <span className="underline text-blue-500 cursor-pointer">all</span>{" "}
+        campaigns. Click on a campaign to see details.
       </div>
       <div className="my-5">
         <BuyCampaignList />

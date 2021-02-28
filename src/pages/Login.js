@@ -44,7 +44,7 @@ const Login = () => {
           (isLoading ? " animate-pulse  " : " ")
         }
       >
-        <div className="text-2xl">Please, identify yourself</div>
+        <div className="text-2xl text-center">Login</div>
         <div className="flex flex-col">
           <input
             type="text"

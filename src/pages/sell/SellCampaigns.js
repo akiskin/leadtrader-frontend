@@ -18,9 +18,7 @@ const SellCampaigns = () => (
                 Start Selling
               </button>
             </Link>
-            <span className="ml-3">
-              Create new Sell Campaign and upload your leads
-            </span>
+            <span className="ml-3">Create new sell campaign</span>
           </div>
         </div>
       </div>
@@ -28,9 +26,11 @@ const SellCampaigns = () => (
     </div>
 
     <div className="rounded bg-white py-1 mx-6 mt-6">
-      <div className="mt-5 mx-6 font-semibold text-2xl">All Sell Campaigns</div>
+      <div className="mt-5 mx-6 font-semibold text-2xl">Sell Campaigns</div>
       <div className="mx-6 text-gray-400">
-        Click on a campaign to see details
+        Showing{" "}
+        <span className="underline text-blue-500 cursor-pointer">all</span>{" "}
+        campaigns. Click on a campaign to see details.
       </div>
       <div className="my-5">
         <SellCampaignList />

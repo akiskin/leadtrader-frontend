@@ -66,7 +66,7 @@ const SellCampaign = (props) => {
         <div className="flex-1 mt-5 ml-6 mr-3">
           <div className="rounded bg-white px-3 py-1">
             <div className="text-lg font-semibold uppercase tracking-wide">
-              Sell Campaign Info
+              Sell Campaign Detail
             </div>
             <div className="text-sm text-gray-500">
               Created:{" "}
