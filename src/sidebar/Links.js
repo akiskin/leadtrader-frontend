@@ -6,7 +6,7 @@ import {
   faChartBar,
   faMoneyBillAlt,
   faIdCard,
-  faPlusSquare,
+  //faPlusSquare,
 } from "@fortawesome/free-regular-svg-icons";
 import {
   faPowerOff,
@@ -25,7 +25,7 @@ const SidebarLinks = () => {
         <SingleLink to="/" text="Dashboard" icon={faChartBar} />
         <SingleLink to="/sell" text="Sell Campaigns" icon={faCloudUploadAlt} />
         <SingleLink to="/buy" text="Buy Campaigns" icon={faCloudDownloadAlt} />
-        <SingleLink to="/" text="Finances" icon={faMoneyBillAlt} />
+        <SingleLink to="/finances" text="Finances" icon={faMoneyBillAlt} />
         <Logout />
       </div>
     );
