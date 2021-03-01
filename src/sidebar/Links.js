@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -58,10 +58,12 @@ const SingleLink = (props) => (
 
 export const Logout = () => {
   const dispatch = useDispatch();
+  let history = useHistory();
 
   const handleClick = async () => {
     await logout();
-    //TODO check if successfull
+
+    history.push("/");
     dispatch({ type: ACTIONS.LOGOUT_SUCCESS });
   };
 
