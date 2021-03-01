@@ -15,6 +15,7 @@ const Login = () => {
   const [isLoading, setLoading] = useState(false);
   const [username, setUsername] = useState(process.env.REACT_APP_TEST_LOGIN);
   const [password, setPassword] = useState(process.env.REACT_APP_TEST_PASSWORD);
+  const [loginFailed, setLoginFailed] = useState(false);
 
   const dispatch = useDispatch();
 
@@ -22,6 +23,7 @@ const Login = () => {
 
   const login = async (e) => {
     e.preventDefault();
+    setLoginFailed(false);
     setLoading(true);
 
     await getCsrf();
@@ -32,7 +34,8 @@ const Login = () => {
       dispatch({ type: ACTIONS.LOGIN_SUCCESS, user });
       history.replace(from);
     } else {
-      //TODO wrong login
+      setLoading(false);
+      setLoginFailed(true);
     }
   };
 
@@ -74,6 +77,13 @@ const Login = () => {
             </button>
           )}
         </div>
+        {loginFailed ? (
+          <div className="flex justify-center items-center">
+            <span className="text-red-900 font-semibold">
+              Wrong login or password
+            </span>
+          </div>
+        ) : null}
       </div>
     </div>
   );
