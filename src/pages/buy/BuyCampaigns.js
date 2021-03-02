@@ -81,8 +81,8 @@ const BuyCampaignList = () => {
               {campaign.start} - {campaign.finish}
             </td>
             <td>{campaign.product.name}</td>
-            <td>{campaign.budget}</td>
-            <td>{campaign.budget_left}</td>
+            <td>$ {campaign.budget}</td>
+            <td>$ {campaign.budget - (campaign.budget_spent ?? 0)}</td>
             <td>{campaign.leads_bought}</td>
           </tr>
         ))}
