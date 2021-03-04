@@ -10,53 +10,63 @@ import UploadWizard from "./components/UploadWizard";
 import {
   getSellCampaignLeads,
   updateSellCampaign,
+  getSellCampaignDetails,
 } from "common/requests/sellcampaigns";
 import {
   readableStatus,
   SELL_CAMPAIGN_STATUS,
 } from "common/consts/sellCampaigns";
 import { readableStatus as leadStatus } from "common/consts/leads";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { ACTIONS } from "store/sellcampaigns/actions";
 
 const SellCampaign = (props) => {
   const { id } = useParams();
 
-  const sellCampaign = useSelector((store) =>
-    store.sellcampaigns.list.find((sc) => sc.id === id)
-  );
+  const [sellCampaign, setSellCampaign] = useState({});
 
-  const [isLoading, setLoading] = useState(true);
+  const [dashboardIsLoading, setDashboardIsLoading] = useState(true);
 
   const [leads, setLeads] = useState([]);
 
   const [uploadModalOpen, setUploadModalOpen] = useState(false);
 
-  useEffect(() => {
-    const getLeads = async (id) => {
-      const [success, data] = await getSellCampaignLeads(id);
+  const getLeads = async (id) => {
+    const [success, data] = await getSellCampaignLeads(id);
 
-      if (success) {
-        const mapped = data.map((row) =>
-          Object.assign(
-            {
-              ...row,
-              created_at: new Date(row.created_at),
-            },
-            "transaction" in row
-              ? {
-                  transaction: {
-                    ...row.transaction,
-                    created_at: new Date(row.transaction.created_at),
-                  },
-                }
-              : {}
-          )
-        );
-        setLeads(mapped);
-        setLoading(false);
-      }
-    };
+    if (success) {
+      const mapped = data.map((row) =>
+        Object.assign(
+          {
+            ...row,
+            created_at: new Date(row.created_at),
+          },
+          "transaction" in row
+            ? {
+                transaction: {
+                  ...row.transaction,
+                  created_at: new Date(row.transaction.created_at),
+                },
+              }
+            : {}
+        )
+      );
+      setLeads(mapped);
+    }
+  };
+
+  const getDashboard = async (id) => {
+    setDashboardIsLoading(true);
+    const [success, data] = await getSellCampaignDetails(id);
+
+    if (success) {
+      setSellCampaign(data);
+    }
+    setDashboardIsLoading(false);
+  };
+
+  useEffect(() => {
+    getDashboard(id);
     getLeads(id);
   }, [id]);
 
@@ -68,20 +78,10 @@ const SellCampaign = (props) => {
             <div className="text-lg font-semibold uppercase tracking-wide">
               Sell Campaign Detail
             </div>
-            <div className="text-sm text-gray-500">
-              Created:{" "}
-              <span className="font-medium">
-                {sellCampaign.date.toLocaleString()}
-              </span>
-              , ID: <span className="font-medium">{id}</span>
-            </div>
-            <div className="my-2">
-              <hr />
-            </div>
-            {isLoading ? (
+            {dashboardIsLoading ? (
               <LoadingSpinner />
             ) : (
-              <InfoBody campaign={sellCampaign} />
+              <CampaignDetails sellCampaign={sellCampaign.general} />
             )}
             <div className="text-gray-500 pt-4">
               <Link to="/sell">← Back</Link>
@@ -98,22 +98,30 @@ const SellCampaign = (props) => {
                 <div className="text-sm text-gray-500">
                   Current status:{" "}
                   <span className="font-bold">
-                    {readableStatus(sellCampaign.status)}
+                    {dashboardIsLoading
+                      ? null
+                      : readableStatus(sellCampaign.general.status)}
                   </span>
                 </div>
               </div>
               <div className="flex flex-col justify-center">
-                <ControlButtons campaign={sellCampaign} />
+                {dashboardIsLoading ? null : (
+                  <ControlButtons
+                    campaign={sellCampaign.general}
+                    update={() => getDashboard(id)}
+                  />
+                )}
               </div>
             </div>
 
             <div className="my-2">
               <hr />
             </div>
-            {isLoading ? (
+
+            {dashboardIsLoading ? (
               <LoadingSpinner />
             ) : (
-              <StatisticsBody campaign={sellCampaign} />
+              <StatisticsBody data={sellCampaign.stats} />
             )}
           </div>
         </div>
@@ -123,7 +131,7 @@ const SellCampaign = (props) => {
         <div className="flex flex-row justify-between mx-3">
           <div>
             <div className="font-semibold text-2xl">Leads</div>
-            <div className="text-gray-400">All leads uploaded so far</div>
+            <div className="text-gray-400">All uploaded leads</div>
           </div>
 
           <div className="flex flex-col justify-center">
@@ -189,6 +197,22 @@ const SellCampaign = (props) => {
   );
 };
 
+const CampaignDetails = (props) => (
+  <>
+    <div className="text-sm text-gray-500">
+      Created:{" "}
+      <span className="font-medium">
+        {new Date(props.sellCampaign.date).toLocaleString()}
+      </span>
+      , ID: <span className="font-medium">{props.sellCampaign.id}</span>
+    </div>
+    <div className="my-2">
+      <hr />
+    </div>
+    <InfoBody campaign={props.sellCampaign} />
+  </>
+);
+
 const InfoBody = (props) => (
   <>
     <div className="flex flex-row items-center mt-1">
@@ -213,41 +237,35 @@ const StatisticsBody = (props) => (
     <div className="flex flex-row items-center mt-1">
       <div className="rounded-full h-4 w-4 bg-blue-400 mr-2" />
       <div className="w-1/4">Uploaded</div>
-      <div>
-        50 leads <span className="italic">(min $100)</span>
-      </div>
+      <div>{props.data.uploaded} leads</div>
     </div>
 
     <div className="flex flex-row items-center mt-1">
       <div className="rounded-full h-4 w-4 bg-red-500 mr-2" />
       <div className="w-1/4">Rejected</div>
-      <div>
-        5 leads <span className="italic">($10)</span>
-      </div>
+      <div>{props.data.rejected} leads</div>
     </div>
 
     <div className="flex flex-row items-center mt-1">
       <div className="rounded-full h-4 w-4 bg-yellow-500 mr-2" />
       <div className="w-1/4">On Sale</div>
-      <div>
-        10 leads <span className="italic">(min $20)</span>
-      </div>
+      <div>{props.data.selling} leads</div>
     </div>
 
     <div className="flex flex-row items-center mt-1">
       <div className="rounded-full h-4 w-4 bg-green-500 mr-2" />
       <div className="w-1/4">Sold</div>
       <div>
-        35 leads ⟶ <span className="font-semibold">$125</span>
+        {props.data.sold.count} leads ⟶{" "}
+        <span className="font-semibold">$ {props.data.sold.amount}</span>{" "}
+        (commission: $ {props.data.sold.commission})
       </div>
     </div>
 
     <div className="flex flex-row items-center mt-1">
       <div className="rounded-full h-4 w-4 bg-red-500 mr-2" />
       <div className="w-1/4">Retired</div>
-      <div>
-        5 leads <span className="italic">($10)</span>
-      </div>
+      <div>{props.data.retired} leads</div>
     </div>
 
     <div className="my-2">
@@ -258,7 +276,7 @@ const StatisticsBody = (props) => (
       <div className="mr-2 opacity-40">
         <FontAwesomeIcon icon={faClock} />
       </div>
-      <div className="text-sm text-gray-500">Updated 15 mis ago</div>
+      <div className="text-sm text-gray-500">Updated just now</div>
     </div>
   </>
 );
@@ -281,6 +299,7 @@ const ControlButtons = (props) => {
         campaign: { ...data, date: new Date(data.created_at) },
       });
 
+      props.update(); //trigger parent update
       setLoading(false);
     } else {
       setLoading(false);
@@ -308,7 +327,7 @@ const ControlButtons = (props) => {
         onClick={start}
         disabled={loading}
       >
-        {loading ? <LoadingSpinner size="" /> : "Start"}
+        {loading ? <LoadingSpinner /> : "Start"}
       </button>
     );
   }
