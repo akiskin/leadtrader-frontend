@@ -11,8 +11,9 @@ import {
   exportBuyCampaignLeads,
   getBuyCampaignLeads,
   updateBuyCampaign,
+  getBuyCampaignDetails,
 } from "common/requests/buycampaigns";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import {
   BUY_CAMPAIGN_STATUS,
   readableStatus,
@@ -22,12 +23,10 @@ import { ACTIONS } from "store/buycampaigns/actions";
 const BuyCampaign = (props) => {
   const { id } = useParams();
 
-  const buyCampaign = useSelector((store) =>
-    store.buycampaigns.list.find((sc) => sc.id === id)
-  );
+  const [buyCampaign, setBuyCampaign] = useState({});
+  const [dashboardIsLoading, setDashboardIsLoading] = useState(true);
 
   const [isLoading, setLoading] = useState(true);
-
   const [leads, setLeads] = useState([]);
 
   const [uploadModalOpen, setUploadModalOpen] = useState(false);
@@ -35,31 +34,43 @@ const BuyCampaign = (props) => {
   const [filterStartDateString, setFilterStartDateString] = useState("");
   const [filterEndDateString, setFilterEndDateString] = useState("");
 
-  useEffect(() => {
-    const getLeads = async (id) => {
-      const [success, data] = await getBuyCampaignLeads(id);
+  const getDashboard = async (id) => {
+    setDashboardIsLoading(true);
+    const [success, data] = await getBuyCampaignDetails(id);
 
-      if (success) {
-        const mapped = data.map((row) =>
-          Object.assign(
-            {
-              ...row,
-              created_at: new Date(row.created_at),
-            },
-            "lead" in row
-              ? {
-                  lead: {
-                    ...row.lead,
-                    created_at: new Date(row.lead.created_at),
-                  },
-                }
-              : {}
-          )
-        );
-        setLeads(mapped);
-        setLoading(false);
-      }
-    };
+    if (success) {
+      setBuyCampaign(data);
+    }
+    setDashboardIsLoading(false);
+  };
+
+  const getLeads = async (id) => {
+    const [success, data] = await getBuyCampaignLeads(id);
+
+    if (success) {
+      const mapped = data.map((row) =>
+        Object.assign(
+          {
+            ...row,
+            created_at: new Date(row.created_at),
+          },
+          "lead" in row
+            ? {
+                lead: {
+                  ...row.lead,
+                  created_at: new Date(row.lead.created_at),
+                },
+              }
+            : {}
+        )
+      );
+      setLeads(mapped);
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    getDashboard(id);
     getLeads(id);
   }, [id]);
 
@@ -85,27 +96,11 @@ const BuyCampaign = (props) => {
       <div className="flex flex-row" style={{ minHeight: "16rem" }}>
         <div className="flex-1 mt-5 ml-6 mr-3">
           <div className="rounded bg-white px-3 py-1">
-            <div className="text-lg font-semibold uppercase tracking-wide">
-              {buyCampaign.name}
-            </div>
-            <div className="text-sm text-gray-500">
-              Created:{" "}
-              <span className="font-medium">
-                {buyCampaign.date.toLocaleString()}
-              </span>
-              , ID: <span className="font-medium">{id}</span>
-            </div>
-            <div className="my-2">
-              <hr />
-            </div>
-            {isLoading ? (
+            {dashboardIsLoading ? (
               <LoadingSpinner />
             ) : (
-              <InfoBody campaign={buyCampaign} />
+              <CampaignInfo buyCampaign={buyCampaign.general} />
             )}
-            <div className="text-gray-500 pt-4">
-              <Link to="/buy">← Back</Link>
-            </div>
           </div>
         </div>
         <div className="flex-1 mt-5 ml-3 mr-6">
@@ -118,19 +113,27 @@ const BuyCampaign = (props) => {
                 <div className="text-sm text-gray-500">
                   Current status:{" "}
                   <span className="font-bold">
-                    {readableStatus(buyCampaign.status)}
+                    {dashboardIsLoading
+                      ? null
+                      : readableStatus(buyCampaign.status)}
                   </span>
                 </div>
               </div>
               <div className="flex flex-col justify-center">
-                <ControlButtons campaign={buyCampaign} />
+                {dashboardIsLoading ? null : (
+                  <ControlButtons campaign={buyCampaign} />
+                )}
               </div>
             </div>
 
             <div className="my-2">
               <hr />
             </div>
-            {isLoading ? <LoadingSpinner /> : <StatisticsBody />}
+            {dashboardIsLoading ? (
+              <LoadingSpinner />
+            ) : (
+              <StatisticsBody data={buyCampaign.stats} />
+            )}
           </div>
         </div>
       </div>
@@ -181,13 +184,17 @@ const BuyCampaign = (props) => {
               </tr>
             </thead>
             <tbody>
-              {filteredLeads().map((lead) => (
-                <tr key={lead.id}>
-                  <td className="pl-6">{lead.created_at.toLocaleString()}</td>
-                  <td>{lead.lead.id}</td>
-                  <td>{lead.total_price}</td>
-                </tr>
-              ))}
+              {isLoading
+                ? filteredLeads().map((lead) => (
+                    <tr key={lead.id}>
+                      <td className="pl-6">
+                        {lead.created_at.toLocaleString()}
+                      </td>
+                      <td>{lead.lead.id}</td>
+                      <td>{lead.total_price}</td>
+                    </tr>
+                  ))
+                : null}
             </tbody>
           </table>
         </div>
@@ -215,26 +222,44 @@ const BuyCampaign = (props) => {
   );
 };
 
-const InfoBody = (props) => (
+const CampaignInfo = (props) => (
   <>
+    <div className="text-lg font-semibold uppercase tracking-wide">
+      {props.buyCampaign.name}
+    </div>
+    <div className="text-sm text-gray-500">
+      Created:{" "}
+      <span className="font-medium">
+        {new Date(props.buyCampaign.created_at).toLocaleString()}
+      </span>
+      , ID: <span className="font-medium">{props.buyCampaign.id}</span>
+    </div>
+    <div className="my-2">
+      <hr />
+    </div>
     <div className="flex flex-row items-center mt-1">
       <div className="w-1/4">Product</div>
-      <div className="font-medium">{props.campaign.product.name}</div>
+      <div className="font-medium">{props.buyCampaign.product.name}</div>
     </div>
 
     <div className="flex flex-row items-center mt-1">
       <div className="w-1/4">Max Price, $</div>
-      <div className="font-medium">{props.campaign.max_price}</div>
+      <div className="font-medium">{props.buyCampaign.max_price}</div>
     </div>
 
     <div className="flex flex-row items-center mt-1">
       <div className="w-1/4">Budget, $</div>
-      <div className="font-medium">{props.campaign.budget}</div>
+      <div className="font-medium">{props.buyCampaign.budget}</div>
     </div>
 
     <div className="flex flex-row items-center mt-1">
       <div className="w-1/4">Buying Rules</div>
-      <div className="font-medium">x{props.campaign.buy_rules.length} used</div>
+      <div className="font-medium">
+        x{props.buyCampaign.buy_rules.length} used
+      </div>
+    </div>
+    <div className="text-gray-500 pt-4">
+      <Link to="/buy">← Back</Link>
     </div>
   </>
 );
@@ -245,7 +270,9 @@ const StatisticsBody = (props) => (
       <div className="rounded-full h-4 w-4 bg-green-500 mr-2" />
       <div className="w-1/4">Bought</div>
       <div>
-        35 leads ⟶ <span className="font-semibold">$125</span>
+        {props.data.bought.count} leads ⟶{" "}
+        <span className="font-semibold">$ {props.data.bought.amount}</span>{" "}
+        (commission: $ {props.data.bought.commission})
       </div>
     </div>
 
@@ -253,7 +280,12 @@ const StatisticsBody = (props) => (
       <div className="rounded-full h-4 w-4 bg-red-500 mr-2" />
       <div className="w-1/4">Budget Left</div>
       <div>
-        30% <span className="italic">($125)</span>
+        {props.data.budget.total === 0
+          ? 0
+          : Math.round(
+              (props.data.budget.left / props.data.budget.total) * 100
+            )}
+        % <span className="italic">($ {props.data.budget.left})</span>
       </div>
     </div>
 
@@ -265,7 +297,7 @@ const StatisticsBody = (props) => (
       <div className="mr-2 opacity-40">
         <FontAwesomeIcon icon={faClock} />
       </div>
-      <div className="text-sm text-gray-500">Updated 15 mis ago</div>
+      <div className="text-sm text-gray-500">Updated just now</div>
     </div>
   </>
 );

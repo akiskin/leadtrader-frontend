@@ -202,7 +202,7 @@ const CampaignDetails = (props) => (
     <div className="text-sm text-gray-500">
       Created:{" "}
       <span className="font-medium">
-        {new Date(props.sellCampaign.date).toLocaleString()}
+        {new Date(props.sellCampaign.created_at).toLocaleString()}
       </span>
       , ID: <span className="font-medium">{props.sellCampaign.id}</span>
     </div>

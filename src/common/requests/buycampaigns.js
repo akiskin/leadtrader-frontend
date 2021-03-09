@@ -106,3 +106,18 @@ export const updateBuyCampaign = async (id, newFields) => {
     return [false, e.toString()];
   }
 };
+
+export const getBuyCampaignDetails = async (id) => {
+  try {
+    const response = await apiClient.get(`/buycampaigns/${id}/details`);
+
+    if (response.status === 200) {
+      return [true, response.data];
+    } else {
+      return [false, response.status];
+    }
+    //TODO 401?
+  } catch (e) {
+    return [false, e.toString()];
+  }
+};
