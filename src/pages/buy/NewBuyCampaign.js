@@ -35,7 +35,11 @@ const NewBuyCampaign = () => {
     if (products.length === 0) {
       dispatch(getProducts());
     } else {
-      if ("fromCampaign" in location.state) {
+      if (
+        "state" in location &&
+        location.state &&
+        "fromCampaign" in location.state
+      ) {
         const prev = location.state.fromCampaign;
         setSelectedProductId(prev.product_id ?? "");
         setMaxPrice(prev.max_price ?? 1);
