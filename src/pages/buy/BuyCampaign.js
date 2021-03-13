@@ -262,7 +262,8 @@ const CampaignInfo = (props) => (
       </div>
     </div>
     <div className="text-gray-500 pt-4">
-      <Link to="/buy">← Back</Link>
+      <Link to="/buy">← Back to list</Link> |{" "}
+      <Link to={`/buy/${props.buyCampaign.id}/edit`}>Edit</Link>
     </div>
   </>
 );

@@ -36,6 +36,10 @@ const routes = [
     main: lazy(() => import("pages/buy/BuyCampaigns")),
   },
   {
+    path: "/buy/:id/edit",
+    main: lazy(() => import("pages/buy/EditBuyCampaign")),
+  },
+  {
     path: "/buy/:id",
     main: lazy(() => import("pages/buy/BuyCampaign")),
   },

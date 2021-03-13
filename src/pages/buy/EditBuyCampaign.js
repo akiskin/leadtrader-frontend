@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import { getProducts } from "store/products/actions";
-import { createBuyCampaign } from "store/buycampaigns/actions";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -10,15 +9,19 @@ import {
   faCheck,
   faTrashAlt,
 } from "@fortawesome/free-solid-svg-icons";
-import { Link, useHistory, useLocation } from "react-router-dom";
+import { Link, useHistory, useParams } from "react-router-dom";
 import { DECISION_POINTS } from "common/consts/buyRules";
+import {
+  getBuyCampaignDetails,
+  updateBuyCampaign,
+} from "common/requests/buycampaigns";
 
-const NewBuyCampaign = () => {
+const EditBuyCampaign = () => {
   const dispatch = useDispatch();
-  const location = useLocation();
+  const { id } = useParams();
 
   const { list: products } = useSelector((store) => store.products);
-  const { isCreating } = useSelector((store) => store.buycampaigns);
+  const [isLoading, setIsLoading] = useState(false);
 
   const [name, setName] = useState("");
   const [selectedProductId, setSelectedProductId] = useState("");
@@ -31,25 +34,28 @@ const NewBuyCampaign = () => {
   const [validationFailed, setValidationFailed] = useState(false);
   const [showingNewRule, setShowingNewRule] = useState(false);
 
+  const getDashboard = async (id) => {
+    const [success, data] = await getBuyCampaignDetails(id);
+
+    if (success) {
+      const buyCampaign = data.general;
+      setName(buyCampaign.name ?? "");
+      setSelectedProductId(buyCampaign.product_id ?? "");
+      setMaxPrice(buyCampaign.max_price ?? 1);
+      setBudget(buyCampaign.budget ?? 0);
+      setStart(buyCampaign.start ?? "");
+      setFinish(buyCampaign.finish ?? "");
+      setRules(buyCampaign.buy_rules ?? []);
+    }
+  };
+
   useEffect(() => {
     if (products.length === 0) {
       dispatch(getProducts());
     } else {
-      if (
-        "state" in location &&
-        location.state &&
-        "fromCampaign" in location.state
-      ) {
-        const prev = location.state.fromCampaign;
-        setSelectedProductId(prev.product_id ?? "");
-        setMaxPrice(prev.max_price ?? 1);
-        setBudget(prev.budget ?? 0);
-        setStart(prev.start ?? "");
-        setFinish(prev.finish ?? "");
-        setRules(prev.buy_rules ?? []);
-      }
+      getDashboard(id);
     }
-  }, [dispatch, products.length, location]);
+  }, [dispatch, id, products.length]);
 
   const history = useHistory();
 
@@ -57,21 +63,27 @@ const NewBuyCampaign = () => {
     setSelectedProductId(products[0].id);
   }
 
-  const create = () => {
+  const create = async () => {
     if (selectedProductId !== "" && maxPrice && budget && name.length > 0) {
       setValidationFailed(false);
-      dispatch(
-        createBuyCampaign(
-          name,
-          selectedProductId,
-          maxPrice,
-          budget,
-          start,
-          finish,
-          rules,
-          history
-        )
-      );
+
+      setIsLoading(true);
+
+      const [success] = await updateBuyCampaign(id, {
+        name,
+        product_id: selectedProductId,
+        max_price: maxPrice,
+        budget,
+        start,
+        finish,
+        buy_rules: rules,
+      });
+
+      setIsLoading(false);
+
+      if (success) {
+        history.push(`/buy/${id}`);
+      }
     } else {
       setValidationFailed(true);
     }
@@ -95,7 +107,7 @@ const NewBuyCampaign = () => {
   return (
     <div className="grid place-items-center h-screen">
       <div className="flex flex-col border border-gray-100 rounded bg-white py-5 px-10 space-y-5 w-3/4">
-        <div className="text-2xl">Create new Buy Campaign</div>
+        <div className="text-2xl">Edit Buy Campaign</div>
         <div className="flex flex-row w-full">
           <div className="flex flex-col space-y-4 w-1/2 mr-2">
             <div>
@@ -227,7 +239,7 @@ const NewBuyCampaign = () => {
           </div>
         </div>
         <div className="flex justify-center h-10 items-center">
-          {isCreating ? (
+          {isLoading ? (
             <FontAwesomeIcon icon={faSpinner} spin />
           ) : (
             <button
@@ -239,13 +251,13 @@ const NewBuyCampaign = () => {
                   : "border-purple-500 ring-purple-200")
               }
             >
-              Create campaign
+              Update campaign
             </button>
           )}
         </div>
 
         <div className="text-gray-500">
-          <Link to="/buy">← Back</Link>
+          <Link to={`/buy/${id}`}>← Back</Link>
         </div>
       </div>
     </div>
@@ -342,4 +354,4 @@ const NewBuyRule = (props) => {
   );
 };
 
-export default NewBuyCampaign;
+export default EditBuyCampaign;
