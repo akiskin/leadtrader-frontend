@@ -115,13 +115,16 @@ const BuyCampaign = (props) => {
                   <span className="font-bold">
                     {dashboardIsLoading
                       ? null
-                      : readableStatus(buyCampaign.status)}
+                      : readableStatus(buyCampaign.general.status)}
                   </span>
                 </div>
               </div>
               <div className="flex flex-col justify-center">
                 {dashboardIsLoading ? null : (
-                  <ControlButtons campaign={buyCampaign} />
+                  <ControlButtons
+                    campaign={buyCampaign.general}
+                    update={() => getDashboard(id)}
+                  />
                 )}
               </div>
             </div>
@@ -419,6 +422,7 @@ const ControlButtons = (props) => {
       });
 
       setLoading(false);
+      props.update();
     } else {
       setLoading(false);
     }
@@ -435,7 +439,7 @@ const ControlButtons = (props) => {
         onClick={stop}
         disabled={loading}
       >
-        {loading ? <LoadingSpinner size="" /> : "Stop"}
+        {loading ? <LoadingSpinner size="sm" /> : "Stop"}
       </button>
     );
   } else {
@@ -445,7 +449,7 @@ const ControlButtons = (props) => {
         onClick={start}
         disabled={loading}
       >
-        {loading ? <LoadingSpinner size="" /> : "Start"}
+        {loading ? <LoadingSpinner size="sm" /> : "Start"}
       </button>
     );
   }
