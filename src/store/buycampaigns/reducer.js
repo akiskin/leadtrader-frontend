@@ -22,7 +22,6 @@ const buycampaigns = (state = initialState, action) => {
       return {
         ...state,
         isCreating: false,
-        list: [...state.list, action.campaign],
       };
     case ACTIONS.BUYCAMPAIGNS_UPDATE_ONE:
       return {

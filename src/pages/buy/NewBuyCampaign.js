@@ -10,11 +10,12 @@ import {
   faCheck,
   faTrashAlt,
 } from "@fortawesome/free-solid-svg-icons";
-import { Link, useHistory } from "react-router-dom";
+import { Link, useHistory, useLocation } from "react-router-dom";
 import { DECISION_POINTS } from "common/consts/buyRules";
 
 const NewBuyCampaign = () => {
   const dispatch = useDispatch();
+  const location = useLocation();
 
   const { list: products } = useSelector((store) => store.products);
   const { isCreating } = useSelector((store) => store.buycampaigns);
@@ -33,9 +34,18 @@ const NewBuyCampaign = () => {
   useEffect(() => {
     if (products.length === 0) {
       dispatch(getProducts());
+    } else {
+      if ("fromCampaign" in location.state) {
+        const prev = location.state.fromCampaign;
+        setSelectedProductId(prev.product_id ?? "");
+        setMaxPrice(prev.max_price ?? 1);
+        setBudget(prev.budget ?? 0);
+        setStart(prev.start ?? "");
+        setFinish(prev.finish ?? "");
+        setRules(prev.buy_rules ?? []);
+      }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dispatch]);
+  }, [dispatch, products.length, location]);
 
   const history = useHistory();
 

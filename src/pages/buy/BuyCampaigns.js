@@ -6,6 +6,10 @@ import { useDispatch, useSelector } from "react-redux";
 import LoadingSpinner from "common/components/LoadingSpinner";
 import { getBuyCampaigns } from "store/buycampaigns/actions";
 import { readableStatus } from "common/consts/buyCampaigns";
+import { getProducts } from "store/products/actions";
+
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCopy } from "@fortawesome/free-regular-svg-icons";
 
 const BuyCampaigns = () => (
   <>
@@ -49,6 +53,7 @@ const BuyCampaignList = () => {
 
   useEffect(() => {
     dispatch(getBuyCampaigns());
+    dispatch(getProducts());
   }, [dispatch]);
 
   return isLoading ? (
@@ -65,25 +70,63 @@ const BuyCampaignList = () => {
           <th className="font-normal text-left">Budget</th>
           <th className="font-normal text-left">Budget Left</th>
           <th className="font-normal text-left"># Bought</th>
+          <th className="font-normal text-left pr-2"></th>
         </tr>
       </thead>
       <tbody>
         {list.map((campaign) => (
           <tr
-            className="border-0 border-t border-gray-100 cursor-pointer hover:bg-gray-100"
+            className="border-0 border-t border-gray-100 hover:bg-gray-100"
             key={campaign.id}
-            onClick={() => history.push(`/buy/${campaign.id}`)}
           >
-            <td className="pl-6 py-3">{format(campaign.date, "d MMM yy")}</td>
-            <td>{campaign.name}</td>
-            <td>{readableStatus(campaign.status)}</td>
-            <td>
+            <td
+              className="pl-6 py-3 cursor-pointer"
+              onClick={() => history.push(`/buy/${campaign.id}`)}
+            >
+              {format(campaign.date, "d MMM yy")}
+            </td>
+            <td
+              className="cursor-pointer"
+              onClick={() => history.push(`/buy/${campaign.id}`)}
+            >
+              {campaign.name}
+            </td>
+            <td
+              className="cursor-pointer"
+              onClick={() => history.push(`/buy/${campaign.id}`)}
+            >
+              {readableStatus(campaign.status)}
+            </td>
+            <td
+              className="cursor-pointer"
+              onClick={() => history.push(`/buy/${campaign.id}`)}
+            >
               {campaign.start} - {campaign.finish}
             </td>
-            <td>{campaign.product.name}</td>
+            <td
+              className="cursor-pointer"
+              onClick={() => history.push(`/buy/${campaign.id}`)}
+            >
+              {campaign.product.name}
+            </td>
             <td>$ {campaign.budget}</td>
             <td>$ {campaign.budget - (campaign.budget_spent ?? 0)}</td>
             <td>{campaign.leads_bought}</td>
+            <td className="pr-2">
+              <Link
+                to={{
+                  pathname: "/buy/new",
+                  state: { fromCampaign: campaign },
+                }}
+              >
+                <FontAwesomeIcon
+                  icon={faCopy}
+                  size="sm"
+                  className="text-gray-600"
+                  title="Copy as new campaign"
+                />
+              </Link>
+            </td>
           </tr>
         ))}
       </tbody>

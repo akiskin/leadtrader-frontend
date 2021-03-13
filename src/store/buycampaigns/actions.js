@@ -53,6 +53,7 @@ export const createBuyCampaign = (
       type: ACTIONS.BUYCAMPAIGNS_CREATING_SUCCESS,
       campaign: { ...data, date: new Date(data.created_at) },
     });
+    dispatch(getBuyCampaigns());
     if (history) {
       history.push(`/buy/${data.id}`);
     }
