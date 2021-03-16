@@ -107,7 +107,7 @@ const BuyCampaignList = () => {
               className="cursor-pointer"
               onClick={() => history.push(`/buy/${campaign.id}`)}
             >
-              {campaign.product.name}
+              {campaign.product ? campaign.product.name : null}
             </td>
             <td>$ {campaign.budget}</td>
             <td>$ {campaign.budget - (campaign.budget_spent ?? 0)}</td>

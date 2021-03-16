@@ -73,7 +73,7 @@ const SellCampaignList = () => {
           >
             <td className="pl-6 py-3">{format(campaign.date, "d MMM yy")}</td>
             <td>{readableStatus(campaign.status)}</td>
-            <td>{campaign.product.name}</td>
+            <td>{campaign.product ? campaign.product.name : null}</td>
             <td>{campaign.leads_total}</td>
             <td>{campaign.leads_sold}</td>
             <td>{campaign.leads_rejected}</td>
