@@ -2,6 +2,7 @@ export const DECISION_POINT_VALUE_TYPES = {
   MONEY: "MONEY",
   INTEGER: "INTEGER",
   PERCENT: "PERCENT",
+  STRING: "STRING",
 };
 
 export const DECISION_POINT_OPERATORS = {
@@ -29,6 +30,33 @@ export const DECISION_POINTS = {
     description: "Count",
     type: DECISION_POINT_VALUE_TYPES.INTEGER,
     operators: [
+      DECISION_POINT_OPERATORS.LT,
+      DECISION_POINT_OPERATORS.LTE,
+      DECISION_POINT_OPERATORS.EQ,
+    ],
+  },
+
+  gender: {
+    presentation: "Applicant's Gender",
+    description: "M or F",
+    type: DECISION_POINT_VALUE_TYPES.STRING,
+    operators: [DECISION_POINT_OPERATORS.EQ],
+  },
+
+  postcode: {
+    presentation: "Applicant's Postcode",
+    description: "4 digit code",
+    type: DECISION_POINT_VALUE_TYPES.STRING,
+    operators: [DECISION_POINT_OPERATORS.EQ],
+  },
+
+  requestedAmount: {
+    presentation: "Requested loan amount",
+    description: "Amount in $",
+    type: DECISION_POINT_VALUE_TYPES.MONEY,
+    operators: [
+      DECISION_POINT_OPERATORS.GT,
+      DECISION_POINT_OPERATORS.GTE,
       DECISION_POINT_OPERATORS.LT,
       DECISION_POINT_OPERATORS.LTE,
       DECISION_POINT_OPERATORS.EQ,

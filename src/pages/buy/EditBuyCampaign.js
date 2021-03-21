@@ -10,7 +10,10 @@ import {
   faTrashAlt,
 } from "@fortawesome/free-solid-svg-icons";
 import { Link, useHistory, useParams } from "react-router-dom";
-import { DECISION_POINTS } from "common/consts/buyRules";
+import {
+  DECISION_POINTS,
+  DECISION_POINT_VALUE_TYPES,
+} from "common/consts/buyRules";
 import {
   getBuyCampaignDetails,
   updateBuyCampaign,
@@ -336,13 +339,23 @@ const NewBuyRule = (props) => {
               ))
             : null}
         </select>
-        <input
-          type="number"
-          step="0.01"
-          value={value}
-          onChange={(e) => setValue(e.target.value)}
-          className="w-14 hover:shadow-inner border"
-        ></input>
+
+        {DECISION_POINTS[dp].type === DECISION_POINT_VALUE_TYPES.STRING ? (
+          <input
+            type="text"
+            value={value}
+            onChange={(e) => setValue(e.target.value)}
+            className="w-14 hover:shadow-inner border"
+          ></input>
+        ) : (
+          <input
+            type="number"
+            step="0.01"
+            value={value}
+            onChange={(e) => setValue(e.target.value)}
+            className="w-14 hover:shadow-inner border"
+          ></input>
+        )}
       </div>
       <div className="text-green-700 cursor-pointer" onClick={onSave}>
         <FontAwesomeIcon icon={faCheck} />
