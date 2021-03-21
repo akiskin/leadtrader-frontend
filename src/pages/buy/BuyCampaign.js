@@ -65,8 +65,8 @@ const BuyCampaign = (props) => {
         )
       );
       setLeads(mapped);
-      setLoading(false);
     }
+    setLoading(false);
   };
 
   useEffect(() => {
@@ -184,17 +184,19 @@ const BuyCampaign = (props) => {
                 <th className="pl-6 font-normal text-left">Buy Date</th>
                 <th className="font-normal text-left">ID</th>
                 <th className="font-normal text-left">Price</th>
+                <th className="font-normal text-left">Commission</th>
               </tr>
             </thead>
             <tbody>
-              {isLoading
+              {!isLoading
                 ? filteredLeads().map((lead) => (
                     <tr key={lead.id}>
                       <td className="pl-6">
                         {lead.created_at.toLocaleString()}
                       </td>
                       <td>{lead.lead.id}</td>
-                      <td>{lead.total_price}</td>
+                      <td>$ {lead.total_price}</td>
+                      <td>$ {lead.commission}</td>
                     </tr>
                   ))
                 : null}
@@ -329,19 +331,21 @@ const DownloadTool = (props) => {
   }, [props.campaign, props.startDateString, props.endDateString]);
 
   const startDownload = (e) => {
-    const csv = leads
-      .map((el) =>
-        Object.values(el)
-          .map((text) =>
-            text
-              .toString()
-              .replace(/\\/g, "\\\\")
-              .replace(/\n/g, "\\n")
-              .replace(/,/g, "\\,")
-          )
-          .join(",")
-      )
-      .join("\n");
+    const csv =
+      "buy_date,lead_id,document_id,purpose,amount,first_name,last_name,gender,postcode,address,phone,email\n" +
+      leads
+        .map((el) =>
+          Object.values(el)
+            .map((text) =>
+              text
+                .toString()
+                .replace(/\\/g, "\\\\")
+                .replace(/\n/g, "\\n")
+                .replace(/,/g, "\\,")
+            )
+            .join(",")
+        )
+        .join("\n");
     const csvData = new Blob([csv], { type: "text/csv;charset=utf-8;" });
 
     FileSaver.saveAs(csvData, "data.csv");
@@ -364,10 +368,12 @@ const DownloadTool = (props) => {
             <th className="font-normal text-left">Buy Date</th>
             <th className="font-normal text-left">ID</th>
             <th className="font-normal text-left">document_id</th>
-            <th className="font-normal text-left">loan_purpose</th>
-            <th className="font-normal text-left">loan_amount</th>
+            <th className="font-normal text-left">purpose</th>
+            <th className="font-normal text-left">amount</th>
             <th className="font-normal text-left">first_name</th>
             <th className="font-normal text-left">last_name</th>
+            <th className="font-normal text-left">gender</th>
+            <th className="font-normal text-left">postcode</th>
             <th className="font-normal text-left">address</th>
             <th className="font-normal text-left">phone</th>
             <th className="font-normal text-left">email</th>
@@ -385,6 +391,8 @@ const DownloadTool = (props) => {
               <td className="font-normal text-left">{lead.loan_amount}</td>
               <td className="font-normal text-left">{lead.first_name}</td>
               <td className="font-normal text-left">{lead.last_name}</td>
+              <td className="font-normal text-left">{lead.gender}</td>
+              <td className="font-normal text-left">{lead.postcode}</td>
               <td className="font-normal text-left">{lead.address}</td>
               <td className="font-normal text-left">{lead.phone}</td>
               <td className="font-normal text-left">{lead.email}</td>

@@ -13,10 +13,16 @@ import {
 const CSV_COLUMNS = {
   first_name: { name: "firstname", required: true, presentation: "First Name" },
   last_name: { name: "lastname", required: true, presentation: "Last Name" },
+  gender: { name: "gender", required: true, presentation: "Gender" },
+  postcode: { name: "postcode", required: true, presentation: "Postcode" },
   address: { name: "address", required: true, presentation: "Address" },
   phone: { name: "phone", required: true, presentation: "Phone" },
   email: { name: "email", required: true, presentation: "E-mail" },
-  document_id: { name: "documentid", required: true, presentation: "DocID" },
+  document_id: {
+    name: "documentid",
+    required: true,
+    presentation: "DocumentID",
+  },
   loan_purpose: {
     name: "loanpurpose",
     required: true,
