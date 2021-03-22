@@ -16,24 +16,57 @@ import {
 import { logout } from "common/requests/auth";
 import { ACTIONS } from "store/auth/actions";
 
-const SidebarLinks = () => {
+const SidebarLinks = (props) => {
   const loggedIn = useSelector((state) => state.auth.loggedIn);
 
   if (loggedIn) {
     return (
-      <div className="pl-4 pr-4 space-y-2">
-        <SingleLink to="/" text="Dashboard" icon={faChartBar} />
-        <SingleLink to="/sell" text="Sell Campaigns" icon={faCloudUploadAlt} />
-        <SingleLink to="/buy" text="Buy Campaigns" icon={faCloudDownloadAlt} />
-        <SingleLink to="/finances" text="Finances" icon={faMoneyBillAlt} />
-        <Logout />
+      <div
+        className={
+          props.minimized ? "pl-1 pr-1 space-y-2" : "pl-4 pr-4 space-y-2"
+        }
+      >
+        <SingleLink
+          to="/"
+          text="Dashboard"
+          icon={faChartBar}
+          iconOnly={props.minimized}
+        />
+        <SingleLink
+          to="/sell"
+          text="Sell Campaigns"
+          icon={faCloudUploadAlt}
+          iconOnly={props.minimized}
+        />
+        <SingleLink
+          to="/buy"
+          text="Buy Campaigns"
+          icon={faCloudDownloadAlt}
+          iconOnly={props.minimized}
+        />
+        <SingleLink
+          to="/finances"
+          text="Finances"
+          icon={faMoneyBillAlt}
+          iconOnly={props.minimized}
+        />
+        <Logout iconOnly={props.minimized} />
       </div>
     );
   } else {
     //<SingleLink to="/register" text="Register" icon={faPlusSquare} />
     return (
-      <div className="pl-4 pr-4 space-y-2">
-        <SingleLink to="/login" text="Login" icon={faIdCard} />
+      <div
+        className={
+          props.minimized ? "pl-1 pr-1 space-y-2" : "pl-4 pr-4 space-y-2"
+        }
+      >
+        <SingleLink
+          to="/login"
+          text="Login"
+          icon={faIdCard}
+          iconOnly={props.minimized}
+        />
       </div>
     );
   }
@@ -44,19 +77,28 @@ const SingleLink = (props) => (
     <Link to={props.to}>
       <div className="h-full rounded hover:bg-purple-400 flex flex-row items-center">
         {"icon" in props ? (
-          <div className="opacity-50 ml-3 text-gray-100">
+          <div
+            className={
+              props.iconOnly
+                ? "opacity-50 text-gray-100"
+                : "opacity-50 ml-3 text-gray-100"
+            }
+            title={props.text}
+          >
             <FontAwesomeIcon icon={props.icon} size="2x" fixedWidth />
           </div>
         ) : null}
-        <span className="ml-4 text-base uppercase text-gray-300 font-bold tracking-wide">
-          {props.text}
-        </span>
+        {props.iconOnly ? null : (
+          <span className="ml-4 text-base uppercase text-gray-300 font-bold tracking-wide">
+            {props.text}
+          </span>
+        )}
       </div>
     </Link>
   </div>
 );
 
-export const Logout = () => {
+export const Logout = (props) => {
   const dispatch = useDispatch();
   let history = useHistory();
 
@@ -73,12 +115,21 @@ export const Logout = () => {
         onClick={handleClick}
         className="h-full rounded hover:bg-purple-400 flex flex-row items-center cursor-pointer"
       >
-        <div className="opacity-50 ml-3 text-gray-100">
+        <div
+          className={
+            props.iconOnly
+              ? "opacity-50 text-gray-100"
+              : "opacity-50 ml-3 text-gray-100"
+          }
+          title="Logout"
+        >
           <FontAwesomeIcon icon={faPowerOff} size="2x" fixedWidth />
         </div>
-        <span className="ml-4 text-base uppercase text-gray-300 font-bold tracking-wide">
-          Logout
-        </span>
+        {props.iconOnly ? null : (
+          <span className="ml-4 text-base uppercase text-gray-300 font-bold tracking-wide">
+            Logout
+          </span>
+        )}
       </div>
     </div>
   );

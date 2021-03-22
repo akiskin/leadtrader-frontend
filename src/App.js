@@ -33,13 +33,20 @@ const App = () => {
     check();
   }, [dispatch]);
 
+  const [minimized, setMinimized] = useState(false);
+
   if (checked) {
     return (
       <Router>
         <div className="flex flex-row w-full">
-          <div className="flex flex-col w-64 flex-shrink-0 h-screen justify-between bg-gradient-to-b from-purple-500 to-purple-400">
+          <div
+            className={
+              "flex flex-col flex-shrink-0 h-screen justify-between bg-gradient-to-b from-purple-500 to-purple-400 " +
+              (minimized ? "w-12" : "w-64")
+            }
+          >
             <div className="pt-4">
-              <Links />
+              <Links minimized={minimized} />
             </div>
 
             <Switch>
@@ -54,6 +61,14 @@ const App = () => {
                 ) : null
               )}
             </Switch>
+            <div className="text-right">
+              <span
+                onClick={() => setMinimized(!minimized)}
+                className="pr-2 cursor-pointer text-gray-100"
+              >
+                {minimized ? "Max" : "← Minimize"}
+              </span>
+            </div>
           </div>
 
           <div className="flex-1 bg-gray-100">
