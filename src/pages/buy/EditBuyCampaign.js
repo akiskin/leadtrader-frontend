@@ -86,6 +86,8 @@ const EditBuyCampaign = () => {
 
       if (success) {
         history.push(`/buy/${id}`);
+      } else {
+        setIsLoading(false);
       }
     } else {
       setValidationFailed(true);

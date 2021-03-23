@@ -84,7 +84,8 @@ const SellCampaign = (props) => {
               <CampaignDetails sellCampaign={sellCampaign.general} />
             )}
             <div className="text-gray-500 pt-4">
-              <Link to="/sell">← Back</Link>
+              <Link to="/sell">← Back</Link> |{" "}
+              <Link to={`/sell/${id}/edit`}>Edit</Link>
             </div>
           </div>
         </div>

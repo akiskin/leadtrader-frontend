@@ -22,6 +22,10 @@ const routes = [
     main: lazy(() => import("pages/sell/SellCampaigns")),
   },
   {
+    path: "/sell/:id/edit",
+    main: lazy(() => import("pages/sell/EditSellCampaign")),
+  },
+  {
     path: "/sell/:id",
     main: lazy(() => import("pages/sell/SellCampaign")),
   },
