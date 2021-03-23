@@ -226,21 +226,26 @@ const NewBuyCampaign = () => {
             </div>
           </div>
         </div>
-        <div className="flex justify-center h-10 items-center">
+        <div className="flex flex-col justify-center h-10 items-center">
           {isCreating ? (
             <FontAwesomeIcon icon={faSpinner} spin />
           ) : (
-            <button
-              onClick={create}
-              className={
-                "w-40 border rounded px-2 py-1 ring-2 " +
-                (validationFailed
-                  ? "border-red-500 ring-red-200"
-                  : "border-purple-500 ring-purple-200")
-              }
-            >
-              Create campaign
-            </button>
+            <>
+              <button
+                onClick={create}
+                className={
+                  "w-40 border rounded px-2 py-1 ring-2 " +
+                  (validationFailed
+                    ? "border-red-500 ring-red-200"
+                    : "border-purple-500 ring-purple-200")
+                }
+              >
+                Create campaign
+              </button>
+              {validationFailed ? (
+                <div>Fill Name, Max price, and Budget</div>
+              ) : null}
+            </>
           )}
         </div>
 
