@@ -19,6 +19,7 @@ import {
 import { readableStatus as leadStatus } from "common/consts/leads";
 import { useDispatch } from "react-redux";
 import { ACTIONS } from "store/sellcampaigns/actions";
+import { format } from "date-fns";
 
 const SellCampaign = (props) => {
   const { id } = useParams();
@@ -159,7 +160,9 @@ const SellCampaign = (props) => {
             <tbody>
               {leads.map((lead) => (
                 <tr key={lead.id}>
-                  <td className="pl-6">{lead.created_at.toLocaleString()}</td>
+                  <td className="pl-6">
+                    {format(lead.created_at, "dd.MM.yyyy")}
+                  </td>
                   <td>{lead.id}</td>
                   <td>{leadStatus(lead.status)}</td>
                   <td>

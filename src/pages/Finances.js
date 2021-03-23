@@ -48,6 +48,7 @@ const TransactionList = () => {
       .map((el) => ({
         period: el.period,
         amount: el.amount,
+        commission: el.commission,
         reference: el.transaction.reference ?? el.transaction.lead_id ?? "",
       }))
       .map((el) =>
@@ -120,16 +121,24 @@ const Tats = (props) => {
               <th className="text-left pl-6">Date</th>
               <th className="text-left">Type</th>
               <th className="text-left">Details</th>
-              <th className="text-right pr-6">Amount</th>
+              <th className="text-right">Amount</th>
+              <th className="text-right pr-6">Incl Commission</th>
             </tr>
           </thead>
           <tbody>
             {props.data.transactions.map((t) => (
               <tr key={t.transaction_id} className="hover:bg-gray-100">
-                <td className="pl-6">{t.period}</td>
+                <td className="pl-6">
+                  <span title={t.period}>
+                    {format(new Date(t.period), "dd.MM.yyyy")}
+                  </span>
+                </td>
                 <td>{readableType(t.transaction.type)}</td>
                 <td>{t.transaction.lead_id ?? t.transaction.reference}</td>
-                <td className="text-right pr-6">{t.amount}</td>
+                <td className="text-right">{t.amount}</td>
+                <td className="text-right pr-6">
+                  {t.commission === 0 ? null : t.commission}
+                </td>
               </tr>
             ))}
           </tbody>

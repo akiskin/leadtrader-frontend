@@ -97,7 +97,9 @@ const SellCampaignList = (props) => {
               key={campaign.id}
               onClick={() => history.push(`/sell/${campaign.id}`)}
             >
-              <td className="pl-6 py-3">{format(campaign.date, "d MMM yy")}</td>
+              <td className="pl-6 py-3">
+                {format(campaign.date, "dd.MM.yyyy")}
+              </td>
               <td>{readableStatus(campaign.status)}</td>
               <td>{campaign.product ? campaign.product.name : null}</td>
               <td>{campaign.leads_total}</td>

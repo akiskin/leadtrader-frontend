@@ -109,7 +109,7 @@ const BuyCampaignList = (props) => {
                 className="pl-6 py-3 cursor-pointer"
                 onClick={() => history.push(`/buy/${campaign.id}`)}
               >
-                {format(campaign.date, "d MMM yy")}
+                {format(campaign.date, "dd.MM.yyyy")}
               </td>
               <td
                 className="cursor-pointer"
